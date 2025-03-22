@@ -1,18 +1,13 @@
 package cmd
-
 import (
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
-
 	"togo/model"
-
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
-
-// toggleCmd represents the toggle command
 var toggleCmd = &cobra.Command{
 	Use:   "toggle <title>",
 	Short: "Toggle todo completion status",
@@ -23,24 +18,15 @@ var toggleCmd = &cobra.Command{
 			fmt.Println("Error loading todos:", err)
 			os.Exit(1)
 		}
-
-		// If no todos, show error
 		if len(todoList.Todos) == 0 {
 			fmt.Println("No todos found. Add some todos with the 'add' command.")
 			os.Exit(1)
 		}
-
-		// If an argument was provided
 		if len(args) > 0 {
 			todoTitle := args[0]
-
-			// First try to find the todo by title (case insensitive)
 			todo, found := todoList.FindByTitle(todoTitle, false)
 			if found {
-				// Toggle using the found todo's ID
 				todoList.Toggle(todo.ID)
-
-				// Find the updated status
 				status := "Pending"
 				for _, t := range todoList.Todos {
 					if t.ID == todo.ID {
@@ -50,129 +36,100 @@ var toggleCmd = &cobra.Command{
 						break
 					}
 				}
-
 				if err := todoList.Save(TodoFileName); err != nil {
 					fmt.Println("Error saving todos:", err)
 					os.Exit(1)
 				}
-
 				fmt.Printf("Todo \"%s\" toggled successfully\n", todoTitle)
 				fmt.Printf("Status: %s\n", status)
 				return
 			}
-
-			// If not found by title, try ID for backward compatibility
 			id, err := strconv.Atoi(todoTitle)
 			if err == nil {
 				for _, todo := range todoList.Todos {
 					if todo.ID == id {
 						todoList.Toggle(id)
-
-						// Get updated status
 						var status string
-						if !todo.Completed { // Because we just toggled it
+						if !todo.Completed { 
 							status = "Completed"
 						} else {
 							status = "Pending"
 						}
-
 						if err := todoList.Save(TodoFileName); err != nil {
 							fmt.Println("Error saving todos:", err)
 							os.Exit(1)
 						}
-
 						fmt.Printf("Todo \"%s\" toggled successfully\n", todo.Title)
 						fmt.Printf("Status: %s\n", status)
 						return
 					}
 				}
 			}
-
-			// Find matching titles for selection (case insensitive)
 			var matches []model.Todo
 			for _, todo := range todoList.Todos {
 				if strings.Contains(strings.ToLower(todo.Title), strings.ToLower(todoTitle)) {
 					matches = append(matches, todo)
 				}
 			}
-
 			if len(matches) == 0 {
 				fmt.Printf("Error: No todos found matching \"%s\"\n", todoTitle)
 				os.Exit(1)
 			} else if len(matches) == 1 {
-				// Single match found
 				todoList.Toggle(matches[0].ID)
-
-				// Find updated status
 				status := "Completed"
 				if matches[0].Completed {
 					status = "Pending"
 				}
-
 				if err := todoList.Save(TodoFileName); err != nil {
 					fmt.Println("Error saving todos:", err)
 					os.Exit(1)
 				}
-
 				fmt.Printf("Todo \"%s\" toggled successfully\n", matches[0].Title)
 				fmt.Printf("Status: %s\n", status)
 				return
 			} else {
-				// Multiple matches - show interactive selection
 				selectedTodo, err := selectTodoForToggle(matches)
 				if err != nil {
 					fmt.Println("Operation cancelled")
 					os.Exit(0)
 				}
-
 				todoList.Toggle(selectedTodo.ID)
-
-				// Get updated status
 				var status string
 				if !selectedTodo.Completed {
 					status = "Completed"
 				} else {
 					status = "Pending"
 				}
-
 				if err := todoList.Save(TodoFileName); err != nil {
 					fmt.Println("Error saving todos:", err)
 					os.Exit(1)
 				}
-
 				fmt.Printf("Todo \"%s\" toggled successfully\n", selectedTodo.Title)
 				fmt.Printf("Status: %s\n", status)
 				return
 			}
 		} else {
-			// No argument provided - show all todos for selection
 			todos := todoList.Todos
 			if len(todos) == 0 {
 				fmt.Println("No todos found. Add some todos with the 'add' command.")
 				os.Exit(0)
 			}
-
 			selectedTodo, err := selectTodoForToggle(todos)
 			if err != nil {
 				fmt.Println("Operation cancelled")
 				os.Exit(0)
 			}
-
 			todoList.Toggle(selectedTodo.ID)
-
-			// Get updated status
 			var status string
 			if !selectedTodo.Completed {
 				status = "Completed"
 			} else {
 				status = "Pending"
 			}
-
 			if err := todoList.Save(TodoFileName); err != nil {
 				fmt.Println("Error saving todos:", err)
 				os.Exit(1)
 			}
-
 			fmt.Printf("Todo \"%s\" toggled successfully\n", selectedTodo.Title)
 			fmt.Printf("Status: %s\n", status)
 		}
@@ -181,15 +138,11 @@ var toggleCmd = &cobra.Command{
 		if len(args) != 0 {
 			return nil, cobra.ShellCompDirectiveNoFileComp
 		}
-
 		todoList, err := model.LoadTodoList(TodoFileName)
 		if err != nil {
 			return nil, cobra.ShellCompDirectiveNoFileComp
 		}
-
 		titles := todoList.GetTodoTitles()
-
-		// Filter titles based on toComplete (case insensitive)
 		if toComplete != "" {
 			var filtered []string
 			for _, title := range titles {
@@ -199,12 +152,9 @@ var toggleCmd = &cobra.Command{
 			}
 			return filtered, cobra.ShellCompDirectiveNoFileComp
 		}
-
 		return titles, cobra.ShellCompDirectiveNoFileComp
 	},
 }
-
-// selectTodoForToggle presents an interactive selection prompt for todos to toggle
 func selectTodoForToggle(todos []model.Todo) (model.Todo, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ . }}",
@@ -212,22 +162,18 @@ func selectTodoForToggle(todos []model.Todo) (model.Todo, error) {
 		Inactive: "  {{ .Title }} {{ if .Completed }}(Completed){{ else }}(Pending){{ end }}",
 		Selected: "✓ {{ .Title | green }} {{ if .Completed }}(Completed){{ else }}(Pending){{ end }}",
 	}
-
 	prompt := promptui.Select{
 		Label:     "Select a todo to toggle status",
 		Items:     todos,
 		Templates: templates,
 		Size:      10,
 	}
-
 	index, _, err := prompt.Run()
 	if err != nil {
 		return model.Todo{}, err
 	}
-
 	return todos[index], nil
 }
-
 func init() {
 	rootCmd.AddCommand(toggleCmd)
 }
