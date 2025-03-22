@@ -1,10 +1,10 @@
-# Togo CLI
+# Togo
 
-A modern, command-line todo application built with Go, featuring a terminal UI powered by [Bubble Tea](https://github.com/charmbracelet/bubbletea) and structured with [Cobra CLI](https://github.com/spf13/cobra).
+A command-line todo application built in Go, featuring a terminal UI powered by [Bubble Tea](https://github.com/charmbracelet/bubbletea) and structured with [Cobra CLI](https://github.com/spf13/cobra).
 
-![Togo CLI Screenshot](docs/screenshot-1.png)
+![togo CLI Screenshot, (3 different features of it ) ](https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c)
 
-[![Togo CLI Demo Video](docs/screenshot-1.png)](docs/demo.mp4)
+[![togo CLI Demo Video]([docs/screenshot-1.png](https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c))]([docs/demo.mp4](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646))
 
 ## Why Togo?
 
@@ -31,31 +31,61 @@ Togo helps you:
   - View all todos together
 - **Data Persistence**: All data saved locally to `~/.togo/todos.json`
 - **Time Tracking**: Created time with relative time display (e.g., "2h ago")
+- **Single json db**: ```bash ~/.togo/todos.json```
+  ![250322_21h23m36s_screenshot](https://github.com/user-attachments/assets/7edd1331-9ae2-4362-87f5-e51e0bf1089c)
 
 ## Installation
 
-### Download Binary
+### Via Go Install
 
-Coming soon!
+The simplest way to install Togo:
 
-### Build from Source
+```bash
+go install github.com/ashkansamadiyan/to-go@latest
+```
+
+### From Source
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/togo.git
-   cd togo
+   git clone https://github.com/ashkansamadiyan/to-go.git
+   cd to-go
    ```
 
-2. Build the executable:
+2. Install using Make (recommended):
    ```bash
+   # Install to GOPATH/bin
+   make install
+   
+   # Or install system-wide (requires sudo)
+   make install-system
+   ```
+
+3. Or build manually:
+   ```bash
+   # Build the executable
    go build
+   
+   # Copy to a directory in your PATH
+   sudo cp togo /usr/local/bin/
    ```
 
-3. Move the executable to a directory in your PATH:
-   ```bash
-   # Example
-   sudo mv togo /usr/local/bin/
-   ```
+### Shell Completion
+
+Togo supports shell completion scripts for bash, zsh, fish, and PowerShell using Cobra CLI:
+
+```bash
+# Bash
+togo completion bash > /etc/bash_completion.d/togo
+# or
+togo completion bash > ~/.bash_completion
+
+# Zsh
+togo completion zsh > "${fpath[1]}/_togo"
+
+# Fish
+togo completion fish > ~/.config/fish/completions/togo.fish
+```
 
 ## Usage
 
