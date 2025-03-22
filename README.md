@@ -1,7 +1,7 @@
 # Togo
 
 A command-line todo application built in Go, featuring a terminal UI powered by [Bubble Tea]
-(https://github.com/charmbracelet/bubbletea) and structured with [Cobra CLI](https://github.com/spf13/cobra).
+(https://github.com/charmbracelet/bubbletea) and structured with [Cobra](https://github.com/spf13/cobra).
 
 
 
@@ -9,7 +9,7 @@ A command-line todo application built in Go, featuring a terminal UI powered by 
 
 ![togo CLI Screenshot, (3 different features of it ) ](https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c)
 
-[![togo CLI Demo Video]([docs/screenshot-1.png](https://github.com/user-attachments/asses/7907d938-06ae-418a-b44c-96581e3edb1c))]([https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646])
+![togo CLI Demo Video, (demo vid) ](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)
 
 ## Why Togo?
 
@@ -77,7 +77,16 @@ go install github.com/ashkansamadiyan/to-go@latest
 
 ### Shell Completion
 
-Togo supports shell completion scripts for bash, zsh, fish, and PowerShell using Cobra CLI:
+Togo supports shell completion scripts for bash, zsh, fish, and PowerShell using Cobra CLI's built-in completion functionality. Cobra automatically adds a `completion` command to Togo, which generates the appropriate completion scripts for your shell.
+
+### How it works
+
+The completion command is automatically provided by the Cobra framework without requiring manual code to be written. Under the hood, Cobra analyzes the command structure of Togo (all commands, flags, and arguments) and generates shell-specific code that provides intelligent tab completion for:
+
+- All commands and subcommands (`togo`, `togo add`, `togo list`, etc.)
+- Command flags (`--archived`, `--all`, etc.)
+- Contextual arguments based on the specific command
+
 
 ```bash
 # Bash
