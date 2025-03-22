@@ -1,15 +1,15 @@
 # Togo
 
 A command-line todo application built in Go, featuring a terminal UI powered by [Bubble Tea]
-![image](https://github.com/user-attachments/assets/d86a7aa3-6aed-4fa4-9f3f-fe164adebbce)
-
-
-
 (https://github.com/charmbracelet/bubbletea) and structured with [Cobra CLI](https://github.com/spf13/cobra).
+
+
+
+![image](https://github.com/user-attachments/assets/d86a7aa3-6aed-4fa4-9f3f-fe164adebbce)
 
 ![togo CLI Screenshot, (3 different features of it ) ](https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c)
 
-[![togo CLI Demo Video]([docs/screenshot-1.png](https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c))]([https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646])
+[![togo CLI Demo Video]([docs/screenshot-1.png](https://github.com/user-attachments/asses/7907d938-06ae-418a-b44c-96581e3edb1c))]([https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646])
 
 ## Why Togo?
 
