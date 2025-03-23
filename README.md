@@ -4,15 +4,13 @@
   A command-line todo application built in Go for developers who need to capture ideas without breaking their workflow.
 </p>
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c" alt="togo CLI Screenshot" style="margin-right: 10px;">
-  <a href="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646">
-    <video width="400" controls>
-      <source src="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+<div style="display: flex; justify-content: center; align-items: center;">
+  <img src="https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c" alt="togo CLI Screenshot" style="margin-right: 10px;" width="400">
+  <a href="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646" target="_blank">
+    <img src="https://via.placeholder.com/400x225.png?text=Click+to+Watch+Video" alt="Video Thumbnail" width="400">
   </a>
-</p>
+</div>
+
 
 ## Why Togo Exists
 
@@ -30,7 +28,6 @@ Togo lets you capture those thoughts instantly without breaking your workflow. Y
 - **Flexible organization**: Toggle completion, archive finished tasks, delete what's no longer needed
 - **Intelligent search/filtering**: Find tasks quickly in lists or through partial matching
 - **Shell integration**: Tab completion for maximum efficiency
-- **Data persistence**: Everything stored locally in `~/.togo/todos.json`
 
 ## Usage
 
@@ -62,7 +59,7 @@ togo list --archived # Archived todos only
 
 The interactive mode shows helpful keyboard shortcuts right in the interface.
 
-![interactive](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)
+![interactive](https://github.com/user-attachments/assets/e75cb61e-00f5-4c5b-ae44-66727521d2c4)
 
 #### 2. Command-Line Operations
 
@@ -190,16 +187,9 @@ yea, i dont think you PS guys need this tool :)
 
 Togo stores all your data in a simple JSON file at `~/.togo/todos.json`.
 
-## Contributing
 
-Contributions welcome! Feel free to open issues or submit PRs.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the do what ever u want with it - see the [LICENSE](LICENSE) file for details. 
