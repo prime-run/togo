@@ -7,7 +7,10 @@
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c" alt="togo CLI Screenshot" style="margin-right: 10px;">
   <a href="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646">
-    <img src="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646" alt="togo CLI Demo Video">
+    <video width="400" controls>
+      <source src="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
   </a>
 </p>
 
@@ -59,7 +62,7 @@ togo list --archived # Archived todos only
 
 The interactive mode shows helpful keyboard shortcuts right in the interface.
 
-![Interactive mode screenshot](https://github.com/user-attachments/assets/7edd1331-9ae2-4362-87f5-e51e0bf1089c)
+![interactive](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)
 
 #### 2. Command-Line Operations
 
