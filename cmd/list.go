@@ -1,12 +1,16 @@
 package cmd
+
 import (
 	"fmt"
 	"os"
-	"togo/model"
-	"togo/ui"
+
+	"github.com/ashkansamadiyan/togo/model"
+	"github.com/ashkansamadiyan/togo/ui"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
+
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all todos",
@@ -48,6 +52,7 @@ You can use:
 		}
 	},
 }
+
 func init() {
 	rootCmd.AddCommand(listCmd)
 	listCmd.Flags().BoolP("archived", "a", false, "Show only archived todos")

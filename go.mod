@@ -1,4 +1,4 @@
-module togo
+module github.com/ashkansamadiyan/togo
 
 go 1.24.1
 

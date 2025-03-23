@@ -1,11 +1,15 @@
 package cmd
+
 import (
 	"fmt"
 	"os"
 	"strings"
-	"togo/model"
+
+	"github.com/ashkansamadiyan/togo/model"
+
 	"github.com/spf13/cobra"
 )
+
 var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add a new todo",
@@ -31,6 +35,7 @@ var addCmd = &cobra.Command{
 		fmt.Printf("Title: %s\n", todo.Title)
 	},
 }
+
 func init() {
 	rootCmd.AddCommand(addCmd)
 }
