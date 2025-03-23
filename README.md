@@ -20,10 +20,11 @@ Togo lets you capture those thoughts instantly without breaking your workflow. Y
 
 - **Zero-friction capture**: Add ideas directly from your terminal without interrupting your flow
 - **Beautiful terminal UI**: Interactive interface for managing todos when you're ready to organize
-- **Multiple management methods**: Use either interactive mode or command-line operations
+- **VIM keybinds**: HJKL motions support
+- **Multiple management methods**: Use either interactive mode or command-line operations to manage
 - **Flexible organization**: Toggle completion, archive finished tasks, delete what's no longer needed
-- **Intelligent search/filtering**: Find tasks quickly in lists or through partial matching
-- **Shell integration**: Tab completion for maximum efficiency
+- **Search/filtering**: Find tasks quickly in lists or through partial start-matching
+- **Shell integration**: Tab completion for workflow integration
 
 ## Usage
 
@@ -119,21 +120,43 @@ togo add -h
 
 ## Installation
 
-### Via Go Install
+### Option 1: Via Go Install
+
+The simplest way to install Togo:
 
 ```bash
 go install github.com/ashkansamadiyan/togo@latest
 ```
 
-### From Source
+Make sure `$GOPATH/bin` is in your PATH to access the installed binary.
+
+### Option 2: Manual Build
 
 ```bash
+# Clone the repository
 git clone https://github.com/ashkansamadiyan/togo.git
 cd togo
-make install    # Install to GOPATH/bin
-# or
-make install-system  # System-wide installation (requires sudo)
+
+# Build and install manually
+go build
+go install     # Installs to $GOPATH/bin
 ```
+
+### Option 3: Using Make (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/ashkansamadiyan/togo.git
+cd togo
+
+# Install to GOPATH/bin (includes automatic shell completion)
+make install
+
+# OR install system-wide (requires sudo)
+make install-system
+```
+
+All Make installation methods include automatic shell completion setup out of the box, so you can immediately use tab completion for commands and task names.
 
 ## Shell Completion
 

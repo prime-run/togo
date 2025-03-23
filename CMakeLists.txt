@@ -11,40 +11,36 @@ find_program(SHELL_ZSH zsh)
 find_program(SHELL_BASH bash)
 find_program(SHELL_FISH fish)
 
-# Custom target to build the togo binary if needed
-add_custom_target(build-togo
-    COMMAND go build -o togo
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Building togo binary"
-)
+# Check if togo binary exists
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/togo")
+    message(STATUS "No togo binary found. Skipping completion setup.")
+    return()
+endif()
 
 # Setup ZSH completion
 add_custom_target(setup-zsh-completion
-    COMMAND mkdir -p ${COMPLETION_ZSH_DIR}
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/togo completion zsh > ${COMPLETION_ZSH_DIR}/_togo
-    COMMAND echo "fpath=(${COMPLETION_ZSH_DIR} \$$fpath)" >> $ENV{HOME}/.zshrc
-    COMMAND echo "autoload -Uz compinit && compinit" >> $ENV{HOME}/.zshrc
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${COMPLETION_ZSH_DIR}
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/togo completion zsh > ${COMPLETION_ZSH_DIR}/_togo || (echo "Error generating ZSH completion" && exit 0)
+    COMMAND grep -q "fpath=(${COMPLETION_ZSH_DIR}" $ENV{HOME}/.zshrc || echo "fpath=(${COMPLETION_ZSH_DIR} \$$fpath)" >> $ENV{HOME}/.zshrc || true
+    COMMAND grep -q "compinit" $ENV{HOME}/.zshrc || echo "autoload -Uz compinit && compinit" >> $ENV{HOME}/.zshrc || true
     COMMAND echo "ZSH completion setup successful! Please restart your shell or run 'source ~/.zshrc'"
-    DEPENDS build-togo
     COMMENT "Setting up ZSH completion"
 )
 
 # Setup Bash completion
 add_custom_target(setup-bash-completion
-    COMMAND mkdir -p $(dirname ${COMPLETION_BASH_FILE})
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/togo completion bash > ${COMPLETION_BASH_FILE}
-    COMMAND echo "[ -r ${COMPLETION_BASH_FILE} ] && . ${COMPLETION_BASH_FILE}" >> $ENV{HOME}/.bashrc
+    COMMAND ${CMAKE_COMMAND} -E make_directory $(dirname ${COMPLETION_BASH_FILE})
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/togo completion bash > ${COMPLETION_BASH_FILE} || (echo "Error generating Bash completion" && exit 0)
+    COMMAND grep -q "bash_completion" $ENV{HOME}/.bashrc || echo "[ -r ${COMPLETION_BASH_FILE} ] && . ${COMPLETION_BASH_FILE}" >> $ENV{HOME}/.bashrc || true
     COMMAND echo "Bash completion setup successful! Please restart your shell or run 'source ~/.bashrc'"
-    DEPENDS build-togo
     COMMENT "Setting up Bash completion"
 )
 
 # Setup Fish completion
 add_custom_target(setup-fish-completion
-    COMMAND mkdir -p ${COMPLETION_FISH_DIR}
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/togo completion fish > ${COMPLETION_FISH_DIR}/togo.fish
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${COMPLETION_FISH_DIR}
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/togo completion fish > ${COMPLETION_FISH_DIR}/togo.fish || (echo "Error generating Fish completion" && exit 0)
     COMMAND echo "Fish completion setup successful!"
-    DEPENDS build-togo
     COMMENT "Setting up Fish completion"
 )
 
@@ -61,7 +57,7 @@ elseif(SHELL_FISH)
     add_dependencies(setup-completion setup-fish-completion)
     message(STATUS "Detected Fish as default shell")
 else()
-    message(WARNING "Could not detect shell type. Please run one of the specific setup targets.")
+    message(STATUS "Could not detect shell type. No completion will be set up automatically.")
 endif()
 
 # Add a custom target to setup for all shells
@@ -70,13 +66,5 @@ add_dependencies(setup-all-completions setup-zsh-completion setup-bash-completio
 
 # Instructions for the user
 message(STATUS "----------------------------------------")
-message(STATUS "Usage:")
-message(STATUS "  cmake -B build && cmake --build build --target setup-completion")
-message(STATUS "")
-message(STATUS "Available targets:")
-message(STATUS "  setup-completion      - Setup completion for detected default shell")
-message(STATUS "  setup-zsh-completion  - Setup completion for ZSH")
-message(STATUS "  setup-bash-completion - Setup completion for Bash")
-message(STATUS "  setup-fish-completion - Setup completion for Fish")
-message(STATUS "  setup-all-completions - Setup completion for all shells")
+message(STATUS "Togo shell completion setup")
 message(STATUS "----------------------------------------") 
