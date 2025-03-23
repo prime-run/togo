@@ -2,9 +2,13 @@
 
 A command-line todo application built in Go for developers who need to capture ideas without breaking their workflow.
 
-![togo CLI Screenshot](https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c)
-
-[![togo CLI Demo Video](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c" alt="togo CLI Screenshot" width="700">
+  <br><br>
+  <a href="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646">
+    <img src="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646" alt="togo CLI Demo Video" width="700">
+  </a>
+</div>
 
 ## Why Togo Exists
 
@@ -134,9 +138,6 @@ make install-system  # System-wide installation (requires sudo)
 
 Setting up shell completion makes Togo even more efficient by enabling tab completion for commands and tasks.
 
-### Bash
-
-
 ### Zsh
 
 ```bash
@@ -147,11 +148,13 @@ echo "fpath=(~/.zsh/completion \$fpath)" >> ~/.zshrc
 # 2. Enable completions
 echo "autoload -Uz compinit && compinit" >> ~/.zshrc
 
-# 3. Install Togo completion
+# 3. apply Togo completion
 togo completion zsh > ~/.zsh/completion/_togo
 source ~/.zshrc
 ```
 
+
+### Bash
 
 ```bash
 
