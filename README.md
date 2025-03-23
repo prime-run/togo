@@ -4,12 +4,8 @@
   A command-line todo application built in Go for developers who need to capture ideas without breaking their workflow.
 </p>
 
-<div style="display: flex; justify-content: center; align-items: center;">
-  <img src="https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c" alt="togo CLI Screenshot" style="margin-right: 10px;" width="400">
-  <a href="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646" target="_blank">
-    <img src="https://via.placeholder.com/400x225.png?text=Click+to+Watch+Video" alt="Video Thumbnail" width="400">
-  </a>
-</div>
+[![togo CLI Demo Video](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)
+
 
 
 ## Why Togo Exists
