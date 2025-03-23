@@ -32,9 +32,10 @@ Togo lets you capture those thoughts instantly without breaking your workflow. Y
 When inspiration strikes or a task pops into your head, just:
 
 ```bash
+togo add should I use "s in my shell std inputs?
+
 togo add "Call the client about project scope"
 ```
-
 Then get right back to what you were doing. No more mental juggling or lost ideas.
 
 ### Managing Your Tasks
@@ -96,6 +97,9 @@ togo toggle me[TAB]
 ```
 
 Shell will show only tasks containing "me" - perfect for quick selection.
+
+![shellvdef](https://github.com/user-attachments/assets/011b51e0-aad0-4f9e-b782-73ef6be77f07)
+
 
 ### Available Commands
 
