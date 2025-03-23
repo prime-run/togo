@@ -66,7 +66,7 @@ Togo offers flexible command syntax with three usage patterns:
 togo toggle meeting
 ```
 
-If only one task contains "meeting", it executes immediately - no selection needed.
+If only one task contains "meeting", it executes immediately - no selection needed. If multiple tasks match (e.g., "team meeting" and "client meeting"), Togo automatically opens the selection list so you can choose which one you meant.
 
 ##### b) Interactive selection list
 
@@ -105,6 +105,13 @@ Shell will show only tasks containing "me" - perfect for quick selection.
 - `togo delete [task]` - Remove a task permanently
 - `togo list [flags]` - View tasks (--all, --archived)
 
+Every command supports `-h` or `--help` flags to display detailed usage information:
+
+```bash
+togo toggle --help
+togo add -h
+```
+
 ## Installation
 
 ### Via Go Install
@@ -129,20 +136,6 @@ Setting up shell completion makes Togo even more efficient by enabling tab compl
 
 ### Bash
 
-```bash
-# 1. Install bash-completion
-sudo pacman -S bash-completion  # Arch
-sudo apt install bash-completion  # Debian/Ubuntu
-sudo dnf install bash-completion  # Fedora
-
-# 2. Ensure completion is sourced
-echo "[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion" >> ~/.bashrc
-source ~/.bashrc
-
-# 3. Install Togo completion
-togo completion bash > ~/.bash_completion
-source ~/.bash_completion
-```
 
 ### Zsh
 
@@ -159,6 +152,20 @@ togo completion zsh > ~/.zsh/completion/_togo
 source ~/.zshrc
 ```
 
+
+```bash
+
+# 1. Ensure completion is sourced
+echo "[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion" >> ~/.bashrc
+source ~/.bashrc
+
+# 2. Install Togo completion
+togo completion bash > ~/.bash_completion
+source ~/.bash_completion
+```
+
+
+
 ### Fish
 
 ```bash
@@ -169,9 +176,7 @@ togo completion fish > ~/.config/fish/completions/togo.fish
 ### PowerShell
 
 ```powershell
-togo completion powershell > ~/togo.ps1
-echo ". ~/togo.ps1" >> $PROFILE
-. $PROFILE
+yea, i dont think you PS guys need this tool :)
 ```
 
 ## Data Storage
