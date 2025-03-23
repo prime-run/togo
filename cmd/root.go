@@ -25,8 +25,8 @@ import (
 	"fmt"
 	"os"
 
-	"togo/model"
-	"togo/ui"
+	"github.com/ashkansamadiyan/togo/model"
+	"github.com/ashkansamadiyan/togo/ui"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"

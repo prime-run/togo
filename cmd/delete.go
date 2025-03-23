@@ -1,13 +1,16 @@
 package cmd
+
 import (
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
-	"togo/model"
+
+	"github.com/ashkansamadiyan/togo/model"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
+
 var deleteCmd = &cobra.Command{
 	Use:   "delete <title>",
 	Short: "Delete a todo",
@@ -130,6 +133,7 @@ var deleteCmd = &cobra.Command{
 		return titles, cobra.ShellCompDirectiveNoFileComp
 	},
 }
+
 func selectTodo(todos []model.Todo) (model.Todo, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ . }}",
@@ -149,6 +153,7 @@ func selectTodo(todos []model.Todo) (model.Todo, error) {
 	}
 	return todos[index], nil
 }
+
 func confirmDelete(title string) bool {
 	prompt := promptui.Prompt{
 		Label:     fmt.Sprintf("Are you sure you want to delete \"%s\"", title),
@@ -160,6 +165,7 @@ func confirmDelete(title string) bool {
 	}
 	return strings.ToLower(result) == "y"
 }
+
 func init() {
 	rootCmd.AddCommand(deleteCmd)
 }

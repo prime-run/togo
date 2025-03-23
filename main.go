@@ -25,7 +25,7 @@ import (
 	"fmt"
 	"os"
 
-	"togo/cmd"
+	"github.com/ashkansamadiyan/togo/cmd"
 )
 
 func main() {

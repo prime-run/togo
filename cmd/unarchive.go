@@ -1,13 +1,16 @@
 package cmd
+
 import (
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
-	"togo/model"
+
+	"github.com/ashkansamadiyan/togo/model"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
+
 var unarchiveCmd = &cobra.Command{
 	Use:   "unarchive <title>",
 	Short: "Unarchive a todo",
@@ -119,6 +122,7 @@ var unarchiveCmd = &cobra.Command{
 		return archivedTitles, cobra.ShellCompDirectiveNoFileComp
 	},
 }
+
 func selectTodoForUnarchive(todos []model.Todo) (model.Todo, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ . }}",
@@ -138,6 +142,7 @@ func selectTodoForUnarchive(todos []model.Todo) (model.Todo, error) {
 	}
 	return todos[index], nil
 }
+
 func init() {
 	rootCmd.AddCommand(unarchiveCmd)
 }

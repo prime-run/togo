@@ -1,13 +1,16 @@
 package cmd
+
 import (
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
-	"togo/model"
+
+	"github.com/ashkansamadiyan/togo/model"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
+
 var toggleCmd = &cobra.Command{
 	Use:   "toggle <title>",
 	Short: "Toggle todo completion status",
@@ -50,7 +53,7 @@ var toggleCmd = &cobra.Command{
 					if todo.ID == id {
 						todoList.Toggle(id)
 						var status string
-						if !todo.Completed { 
+						if !todo.Completed {
 							status = "Completed"
 						} else {
 							status = "Pending"
@@ -155,6 +158,7 @@ var toggleCmd = &cobra.Command{
 		return titles, cobra.ShellCompDirectiveNoFileComp
 	},
 }
+
 func selectTodoForToggle(todos []model.Todo) (model.Todo, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ . }}",
@@ -174,6 +178,7 @@ func selectTodoForToggle(todos []model.Todo) (model.Todo, error) {
 	}
 	return todos[index], nil
 }
+
 func init() {
 	rootCmd.AddCommand(toggleCmd)
 }
