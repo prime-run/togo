@@ -1,13 +1,16 @@
 package cmd
+
 import (
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
-	"togo/model"
+
+	"github.com/ashkansamadiyan/togo/model"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
+
 var archiveCmd = &cobra.Command{
 	Use:   "archive <title>",
 	Short: "Archive a todo",
@@ -119,6 +122,7 @@ var archiveCmd = &cobra.Command{
 		return activeTitles, cobra.ShellCompDirectiveNoFileComp
 	},
 }
+
 func selectTodoForArchive(todos []model.Todo) (model.Todo, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ . }}",
@@ -138,6 +142,7 @@ func selectTodoForArchive(todos []model.Todo) (model.Todo, error) {
 	}
 	return todos[index], nil
 }
+
 func init() {
 	rootCmd.AddCommand(archiveCmd)
 }

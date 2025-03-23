@@ -1,201 +1,218 @@
 # Togo
 
-A command-line todo application built in Go, featuring a terminal UI powered by [bubbletea](https://github.com/charmbracelet/bubbletea) and structured with [Cobra](https://github.com/spf13/cobra).
+<p align="center">
+  A command-line todo application built in Go for developers who need to capture ideas without breaking their workflow.
+</p>
+
+[![togo CLI Demo Video](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)
 
 
 
-![image](https://github.com/user-attachments/assets/d86a7aa3-6aed-4fa4-9f3f-fe164adebbce)
+## Why Togo Exists
 
-![togo CLI Screenshot, (3 different features of it ) ](https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c)
+Ever been programming and had a brilliant idea or remembered an important task? You know the struggle - interrupting your flow means losing focus, but ignoring it risks forgetting something important. This is where Togo shines, especially for those of us with ADHD tendencies.
 
-[![togo CLI Demo Video, (demo vid) ](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)
+Togo lets you capture those thoughts instantly without breaking your workflow. Your terminal is always just a keystroke away, so just dump your todo with `togo add` and get back to what you were doing. Your brain can relax knowing the idea is safely stored somewhere, and you can maintain your precious focus.
 
-
-## Why Togo?
-
-Sometimes you remember something or want to add a todo but you're busy working on other stuff and you shouldn't get distracted. Nothing is ever closer to you than your terminal, so just dump your todo with `togo add` and decide what to do with it later! Stay focused and never forget those important tasks.
-
-Togo helps you:
-- Capture thoughts instantly without breaking your workflow
-- Manage your tasks from where you already work - the terminal
-- Keep a clear mind by getting todos out of your head and into a system
-- Quickly organize, prioritize, and track your tasks with minimal friction
+**The core philosophy:** Add it now, manage it later.
 
 ## Features
 
-- **Terminal-based UI**: Beautiful interactive interface for managing todos
-- **Todo Management**:
-  - Add new tasks quickly from the command line
-  - Toggle completion status with a keystroke
-  - Archive completed tasks to keep your active list clean
-  - Unarchive tasks when needed
-  - Delete tasks permanently
-- **Flexible Viewing Options**:
-  - View active todos (default)
-  - View archived todos
-  - View all todos together
-- **Data Persistence**: All data saved locally to `~/.togo/todos.json`
-- **Time Tracking**: Created time with relative time display (e.g., "2h ago")
-- **Single json db**: ```bash ~/.togo/todos.json```
-  ![250322_21h23m36s_screenshot](https://github.com/user-attachments/assets/7edd1331-9ae2-4362-87f5-e51e0bf1089c)
+- **Zero-friction capture**: Add ideas directly from your terminal without interrupting your flow
+- **Beautiful terminal UI**: Interactive interface for managing todos when you're ready to organize
+- **VIM keybinds**: HJKL motions support
+- **Multiple management methods**: Use either interactive mode or command-line operations to manage
+- **Flexible organization**: Toggle completion, archive finished tasks, delete what's no longer needed
+- **Search/filtering**: Find tasks quickly in lists or through partial start-matching
+- **Shell integration**: Tab completion for workflow integration
+
+## Usage
+
+### Capturing Ideas (The Main Point!)
+
+When inspiration strikes or a task pops into your head, just:
+
+```bash
+togo add should I use "s in my shell std inputs?
+
+togo add "Call the client about project scope"
+```
+Then get right back to what you were doing. No more mental juggling or lost ideas.
+
+### Managing Your Tasks
+
+Togo offers two primary ways to manage your tasks:
+
+#### 1. Interactive Mode
+
+Open the interactive UI to work with your todos visually:
+
+```bash
+togo
+# or
+togo list           # Active todos only
+togo list --all     # All todos
+togo list --archived # Archived todos only
+```
+
+The interactive mode shows helpful keyboard shortcuts right in the interface.
+
+![interactive](https://github.com/user-attachments/assets/e75cb61e-00f5-4c5b-ae44-66727521d2c4)
+
+#### 2. Command-Line Operations
+
+Togo offers flexible command syntax with three usage patterns:
+
+##### a) Direct selection by partial name
+
+```bash
+togo toggle meeting
+```
+
+If only one task contains "meeting", it executes immediately - no selection needed. If multiple tasks match (e.g., "team meeting" and "client meeting"), Togo automatically opens the selection list so you can choose which one you meant.
+
+##### b) Interactive selection list
+
+```bash
+togo toggle
+```
+
+Opens a selection list where you can choose from available tasks:
+
+![Small selection list](./pics/small-list.png)
+
+As you type, Togo searches through your tasks and filters the results.
+
+##### c) Shell completion integration
+
+If you've installed shell completion (see below), you can use:
+
+```bash
+togo toggle [TAB]
+```
+
+Your shell will present available tasks. Type a few letters to filter by name:
+
+```bash
+togo toggle me[TAB]
+```
+
+Shell will show only tasks containing "me" - perfect for quick selection.
+
+![shellvdef](https://github.com/user-attachments/assets/011b51e0-aad0-4f9e-b782-73ef6be77f07)
+
+
+### Available Commands
+
+- `togo add "Task description"` - Add a new task
+- `togo toggle [task]` - Toggle completion status
+- `togo archive [task]` - Archive a completed task
+- `togo unarchive [task]` - Restore an archived task
+- `togo delete [task]` - Remove a task permanently
+- `togo list [flags]` - View tasks (--all, --archived)
+
+Every command supports `-h` or `--help` flags to display detailed usage information:
+
+```bash
+togo toggle --help
+togo add -h
+```
 
 ## Installation
 
-### Via Go Install
+### Option 1: Via Go Install
 
 The simplest way to install Togo:
 
 ```bash
-go install github.com/ashkansamadiyan/to-go@latest
+go install github.com/ashkansamadiyan/togo@latest
 ```
 
-### From Source
+Make sure `$GOPATH/bin` is in your PATH to access the installed binary.
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/ashkansamadiyan/to-go.git
-   cd to-go
-   ```
-
-2. Install using Make (recommended):
-   ```bash
-   # Install to GOPATH/bin
-   make install
-   
-   # Or install system-wide (requires sudo)
-   make install-system
-   ```
-
-3. Or build manually:
-   ```bash
-   # Build the executable
-   go build
-   
-   # Copy to a directory in your PATH
-   sudo cp togo /usr/local/bin/
-   ```
-
-### Shell Completion
-
-Togo supports shell completion scripts for bash, zsh, fish, and PowerShell using Cobra CLI's built-in completion functionality. Cobra automatically adds a `completion` command to Togo, which generates the appropriate completion scripts for your shell.
-
-### How it works
-
-The completion command is automatically provided by the Cobra framework without requiring manual code to be written. Under the hood, Cobra analyzes the command structure of Togo (all commands, flags, and arguments) and generates shell-specific code that provides intelligent tab completion for:
-
-- All commands and subcommands (`togo`, `togo add`, `togo list`, etc.)
-- Command flags (`--archived`, `--all`, etc.)
-- Contextual arguments based on the specific command
-
+### Option 2: Manual Build
 
 ```bash
-# Bash
-togo completion bash > /etc/bash_completion.d/togo
-# or
+# Clone the repository
+git clone https://github.com/ashkansamadiyan/togo.git
+cd togo
+
+# Build and install manually
+go build
+go install     # Installs to $GOPATH/bin
+```
+
+### Option 3: Using Make (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/ashkansamadiyan/togo.git
+cd togo
+
+# Install to GOPATH/bin (includes automatic shell completion)
+make install
+
+# OR install system-wide (requires sudo)
+make install-system
+```
+
+All Make installation methods include automatic shell completion setup out of the box, so you can immediately use tab completion for commands and task names.
+
+## Shell Completion
+
+Setting up shell completion makes Togo even more efficient by enabling tab completion for commands and tasks.
+
+### Zsh
+
+```bash
+# 1. Create completion directory
+mkdir -p ~/.zsh/completion
+echo "fpath=(~/.zsh/completion \$fpath)" >> ~/.zshrc
+
+# 2. Enable completions
+echo "autoload -Uz compinit && compinit" >> ~/.zshrc
+
+# 3. apply Togo completion
+togo completion zsh > ~/.zsh/completion/_togo
+source ~/.zshrc
+```
+
+
+### Bash
+
+```bash
+
+# 1. Ensure completion is sourced
+echo "[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion" >> ~/.bashrc
+source ~/.bashrc
+
+# 2. Install Togo completion
 togo completion bash > ~/.bash_completion
+source ~/.bash_completion
+```
 
-# Zsh
-togo completion zsh > "${fpath[1]}/_togo"
 
-# Fish
+
+### Fish
+
+```bash
+mkdir -p ~/.config/fish/completions
 togo completion fish > ~/.config/fish/completions/togo.fish
 ```
 
-## Usage
+### PowerShell
 
-### Basic Commands
-
-#### Running without arguments (Interactive Mode)
-
-```bash
-togo
-```
-This launches the interactive table view of your active todos, where you can:
-- Navigate with arrow keys
-- Press ENTER to toggle completion status
-- Press 'd' to delete a todo
-- Press 'a' to archive a todo
-- Press 'q' to quit and save changes
-
-#### Adding Tasks
-
-```bash
-togo add "Buy groceries"
-togo add "Finish project report by Friday"
-```
-
-#### Listing Tasks
-
-List active todos (default):
-```bash
-togo list
-```
-
-List archived todos:
-```bash
-togo list --archived
-# or
-togo list -a
-```
-
-List all todos (both active and archived):
-```bash
-togo list --all
-```
-
-#### Toggle Completion Status
-
-Toggle a task as complete/incomplete by ID:
-```bash
-togo toggle 1
-```
-
-#### Archive/Unarchive Tasks
-
-Archive a completed task by ID:
-```bash
-togo archive 1
-```
-
-Unarchive a task by ID:
-```bash
-togo unarchive 1
-```
-
-#### Delete Tasks
-
-Delete a task by ID:
-```bash
-togo delete 1
+```powershell
+yea, i dont think you PS guys need this tool :)
 ```
 
 ## Data Storage
 
-Togo stores your todos in a JSON file located at `~/.togo/todos.json`. This allows your todos to persist between sessions and be accessible from anywhere on your system.
+Togo stores all your data in a simple JSON file at `~/.togo/todos.json`.
 
-## Keyboard Shortcuts (Interactive Mode)
 
-| Key       | Action                    |
-|-----------|---------------------------|
-| ↑/↓       | Navigate between todos    |
-| Enter     | Toggle completion status  |
-| a         | Archive selected todo     |
-| u         | Unarchive selected todo   |
-| d         | Delete selected todo      |
-| q         | Quit and save changes     |
 
-## Contributing
-
-Contributions are welcome! Feel free to submit issues or pull requests.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-PS: This **README** was generated by ai, im too lazy for this :)
 
 ## License
 
-This project is licensed under the  'do what ever you want with it' License -
+This project is licensed under the do what ever u want with it - see the [LICENSE](LICENSE) file for details. 

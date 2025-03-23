@@ -1,13 +1,16 @@
 package ui
+
 import (
 	"fmt"
 	"strings"
-	"togo/model"
+
+	"github.com/ashkansamadiyan/togo/model"
 	"github.com/charmbracelet/bubbles/table"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
+
 var (
 	baseStyle = lipgloss.NewStyle().
 			BorderStyle(lipgloss.RoundedBorder()).
@@ -17,9 +20,9 @@ var (
 			Foreground(lipgloss.Color("252")).
 			Bold(false)
 	statusCompleteStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("28")) 
+				Foreground(lipgloss.Color("28"))
 	statusPendingStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("136")) 
+				Foreground(lipgloss.Color("136"))
 	helpStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("240"))
 	confirmStyle = lipgloss.NewStyle().
@@ -62,9 +65,9 @@ var (
 	selectedCheckboxStyle = lipgloss.NewStyle().
 				Foreground(lipgloss.Color("34"))
 	createdAtStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("246")) 
+			Foreground(lipgloss.Color("246"))
 	archivedStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("241")) 
+			Foreground(lipgloss.Color("241"))
 	inputStyle = lipgloss.NewStyle().
 			BorderStyle(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color("240")).
@@ -75,11 +78,14 @@ var (
 				Bold(true).
 				MarginBottom(1)
 )
+
 const (
 	checkboxEmpty  = "[ ]"
 	checkboxFilled = "[×]"
 )
+
 type Mode int
+
 const (
 	ModeNormal Mode = iota
 	ModeViewDetail
@@ -87,6 +93,7 @@ const (
 	ModeArchiveConfirm
 	ModeAddTask
 )
+
 type TodoTableModel struct {
 	todoList         *model.TodoList
 	table            table.Model
@@ -102,6 +109,7 @@ type TodoTableModel struct {
 	textInput        textinput.Model
 	showArchived     bool
 }
+
 func NewTodoTable(todoList *model.TodoList) TodoTableModel {
 	displayWidth := 80
 	checkboxColWidth := 5
@@ -160,15 +168,16 @@ func NewTodoTable(todoList *model.TodoList) TodoTableModel {
 	m.updateRows()
 	return m
 }
+
 func (m *TodoTableModel) updateRows() {
-	tableBorderWidth := 4 
+	tableBorderWidth := 4
 	checkboxColWidth := 5
 	statusColWidth := 15
 	createdAtColWidth := 15
 	availableWidth := m.width - tableBorderWidth
-	titleColWidth := availableWidth - checkboxColWidth - statusColWidth - createdAtColWidth - 6 
+	titleColWidth := availableWidth - checkboxColWidth - statusColWidth - createdAtColWidth - 6
 	if titleColWidth < 20 {
-		titleColWidth = 20 
+		titleColWidth = 20
 		if availableWidth-titleColWidth-statusColWidth-createdAtColWidth-6 < checkboxColWidth {
 			statusColWidth = 12
 			createdAtColWidth = 12
@@ -178,7 +187,7 @@ func (m *TodoTableModel) updateRows() {
 	if totalTableWidth > m.width {
 		titleColWidth = m.width - checkboxColWidth - statusColWidth - createdAtColWidth - tableBorderWidth - 6
 		if titleColWidth < 10 {
-			titleColWidth = 10 
+			titleColWidth = 10
 		}
 	}
 	m.textInput.Width = titleColWidth
@@ -209,6 +218,7 @@ func (m *TodoTableModel) updateRows() {
 	}
 	m.table.SetRows(rows)
 }
+
 func (m TodoTableModel) findTodoByID(id int) *model.Todo {
 	for _, todo := range m.todoList.Todos {
 		if todo.ID == id {
@@ -217,6 +227,7 @@ func (m TodoTableModel) findTodoByID(id int) *model.Todo {
 	}
 	return nil
 }
+
 func (m TodoTableModel) findTodoByTitle(title string) *model.Todo {
 	for _, todo := range m.todoList.Todos {
 		if todo.Title == title {
@@ -225,9 +236,11 @@ func (m TodoTableModel) findTodoByTitle(title string) *model.Todo {
 	}
 	return nil
 }
+
 func (m TodoTableModel) Init() tea.Cmd {
 	return textinput.Blink
 }
+
 func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	if msg, ok := msg.(tea.WindowSizeMsg); ok {
@@ -256,7 +269,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						for id := range m.selectedTodoIDs {
 							m.todoList.Delete(id)
 						}
-						m.selectedTodoIDs = make(map[int]bool) 
+						m.selectedTodoIDs = make(map[int]bool)
 						m.bulkActionActive = false
 					} else {
 						for i, todo := range m.todoList.Todos {
@@ -271,7 +284,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						for id := range m.selectedTodoIDs {
 							m.todoList.Archive(id)
 						}
-						m.selectedTodoIDs = make(map[int]bool) 
+						m.selectedTodoIDs = make(map[int]bool)
 						m.bulkActionActive = false
 					} else {
 						for _, todo := range m.todoList.Todos {
@@ -346,62 +359,39 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 					m.updateRows()
 				}
-			case "a":
+			case "n":
 				if len(m.table.Rows()) > 0 {
 					if len(m.selectedTodoIDs) > 0 && m.bulkActionActive {
-						activeCount := 0
 						for id := range m.selectedTodoIDs {
 							todo := m.findTodoByID(id)
-							if todo != nil && !todo.Archived {
-								activeCount++
-							}
-						}
-						if activeCount > 0 {
-							m.mode = ModeArchiveConfirm
-							m.confirmAction = "archive"
-						}
-					} else {
-						selectedTitle := m.table.SelectedRow()[1]
-						for _, todo := range m.todoList.Todos {
-							if todo.Title == selectedTitle && !todo.Archived {
-								m.mode = ModeArchiveConfirm
-								m.confirmAction = "archive"
-								m.actionTitle = selectedTitle
-								break
-							}
-						}
-					}
-				}
-			case "u":
-				if len(m.table.Rows()) > 0 {
-					if len(m.selectedTodoIDs) > 0 && m.bulkActionActive {
-						archivedCount := 0
-						for id := range m.selectedTodoIDs {
-							todo := m.findTodoByID(id)
-							if todo != nil && todo.Archived {
-								archivedCount++
-							}
-						}
-						if archivedCount > 0 {
-							for id := range m.selectedTodoIDs {
-								todo := m.findTodoByID(id)
-								if todo != nil && todo.Archived {
+							if todo != nil {
+								if todo.Archived {
 									m.todoList.Unarchive(id)
+								} else {
+									m.todoList.Archive(id)
 								}
 							}
-							m.updateRows()
 						}
+						m.updateRows()
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
 						for _, todo := range m.todoList.Todos {
-							if todo.Title == selectedTitle && todo.Archived {
-								m.todoList.Unarchive(todo.ID)
+							if todo.Title == selectedTitle {
+								if todo.Archived {
+									m.todoList.Unarchive(todo.ID)
+								} else {
+									m.todoList.Archive(todo.ID)
+								}
 								m.updateRows()
 								break
 							}
 						}
 					}
 				}
+			case "a":
+				m.mode = ModeAddTask
+				m.textInput.Focus()
+				return m, textinput.Blink
 			case "d":
 				if len(m.table.Rows()) > 0 {
 					if len(m.selectedTodoIDs) > 0 && m.bulkActionActive {
@@ -429,18 +419,15 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 					m.bulkActionActive = len(m.selectedTodoIDs) > 0
 					m.updateRows()
-					return m, nil 
+					return m, nil
 				}
-			case "n":
-				m.mode = ModeAddTask
-				m.textInput.Focus()
-				return m, textinput.Blink
 			}
 		}
 	}
 	m.table, cmd = m.table.Update(msg)
 	return m, cmd
 }
+
 func (m TodoTableModel) View() string {
 	if m.mode == ModeViewDetail {
 		todo := m.findTodoByID(m.viewTaskID)
@@ -490,7 +477,7 @@ func (m TodoTableModel) View() string {
 		return fullScreenStyle.Width(m.width).Height(m.height).Render(inputView)
 	}
 	if len(m.todoList.Todos) == 0 {
-		return baseStyle.Render("No tasks found. Press 'n' to add a new task!")
+		return baseStyle.Render("No tasks found. Press 'a' to add a new task!")
 	}
 	var helpText string
 	listTitle := "Active Tasks"
@@ -500,22 +487,20 @@ func (m TodoTableModel) View() string {
 	if m.bulkActionActive {
 		helpText = "\n" + listTitle + " - Bulk Mode:" +
 			"\n→ t: toggle completion for all selected" +
-			"\n→ a: archive selected (active tasks)" +
-			"\n→ u: unarchive selected (archived tasks)" +
+			"\n→ n: toggle archive/unarchive for selected" +
 			"\n→ d: delete selected" +
 			"\n→ space: toggle selection" +
 			"\n→ enter: view details" +
-			"\n→ n: add new task" +
+			"\n→ a: add new task" +
 			"\n→ q: quit"
 	} else {
 		helpText = "\n" + listTitle + ":" +
 			"\n→ t: toggle completion" +
-			"\n→ a: archive (active tasks)" +
-			"\n→ u: unarchive (archived tasks)" +
+			"\n→ n: toggle archive/unarchive" +
 			"\n→ d: delete" +
 			"\n→ space: select" +
 			"\n→ enter: view details" +
-			"\n→ n: add new task" +
+			"\n→ a: add new task" +
 			"\n→ q: quit"
 	}
 	help := helpStyle.Render(helpText)
