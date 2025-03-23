@@ -1,14 +1,15 @@
 # Togo
 
-A command-line todo application built in Go for developers who need to capture ideas without breaking their workflow.
+<p align="center">
+  A command-line todo application built in Go for developers who need to capture ideas without breaking their workflow.
+</p>
 
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c" alt="togo CLI Screenshot" width="700">
-  <br><br>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7907d938-06ae-418a-b44c-96581e3edb1c" alt="togo CLI Screenshot" style="margin-right: 10px;">
   <a href="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646">
-    <img src="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646" alt="togo CLI Demo Video" width="700">
+    <img src="https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646" alt="togo CLI Demo Video">
   </a>
-</div>
+</p>
 
 ## Why Togo Exists
 
