@@ -22,10 +22,6 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/ashkansamadiyan/togo/model"
 	"github.com/ashkansamadiyan/togo/ui"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -43,29 +39,18 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			fmt.Println("Error loading todos:", err)
-			os.Exit(1)
-		}
+		todoList := loadTodoListOrExit()
 
-		if len(todoList.Todos) == 0 {
-			fmt.Println("No todos found. Add some todos with 'add' command!")
+		if checkEmptyTodoList(todoList, "No todos found. Add some todos with 'add' command!") {
 			return
 		}
 
 		tableModel := ui.NewTodoTable(todoList)
-		p := tea.NewProgram(tableModel, tea.WithAltScreen())
-		if _, err := p.Run(); err != nil {
-			fmt.Println("Error running program:", err)
-			os.Exit(1)
-		}
+		_, err := tea.NewProgram(tableModel, tea.WithAltScreen()).Run()
+		handleErrorAndExit(err, "Error running program:")
 
 		// Save the todos after any changes
-		if err := todoList.Save(TodoFileName); err != nil {
-			fmt.Println("Error saving todos:", err)
-			os.Exit(1)
-		}
+		saveTodoListOrExit(todoList)
 	},
 }
 
