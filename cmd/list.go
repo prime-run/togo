@@ -1,10 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/ashkansamadiyan/togo/model"
 	"github.com/ashkansamadiyan/togo/ui"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -20,36 +16,32 @@ You can use:
 - list --archived: to show archived todos
 - list --all: to show both active and archived todos`,
 	Run: func(cmd *cobra.Command, args []string) {
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			fmt.Println("Error loading todos:", err)
-			os.Exit(1)
+		todoList := loadTodoListOrExit()
+
+		if checkEmptyTodoList(todoList, "No todos found. Add some todos with 'add' command.") {
+			return
 		}
+
 		archivedFlag, _ := cmd.Flags().GetBool("archived")
 		allFlag, _ := cmd.Flags().GetBool("all")
-		var filteredList *model.TodoList
+
+		// Pass the actual todoList to the UI, along with filter information
+		m := ui.NewTodoTable(todoList)
+
+		// Set the filter mode
 		if archivedFlag {
-			filteredList = &model.TodoList{
-				Todos:  todoList.GetArchivedTodos(),
-				NextID: todoList.NextID,
-			}
+			m.SetShowArchivedOnly(true)
 		} else if allFlag {
-			filteredList = todoList
+			m.SetShowAll(true)
 		} else {
-			filteredList = &model.TodoList{
-				Todos:  todoList.GetActiveTodos(),
-				NextID: todoList.NextID,
-			}
+			m.SetShowActiveOnly(true)
 		}
-		m := ui.NewTodoTable(filteredList)
-		if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
-			fmt.Println("Error running program:", err)
-			os.Exit(1)
-		}
-		if err := todoList.Save(TodoFileName); err != nil {
-			fmt.Println("Error saving todos:", err)
-			os.Exit(1)
-		}
+
+		_, err := tea.NewProgram(m, tea.WithAltScreen()).Run()
+		handleErrorAndExit(err, "Error running program:")
+
+		// Save the original todoList which contains all modifications
+		saveTodoListOrExit(todoList)
 	},
 }
 

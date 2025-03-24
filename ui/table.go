@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/ashkansamadiyan/togo/model"
@@ -77,6 +78,18 @@ var (
 				Foreground(lipgloss.Color("252")).
 				Bold(true).
 				MarginBottom(1)
+	successMessageStyle = lipgloss.NewStyle().
+				Foreground(lipgloss.Color("125")).
+				Bold(true)
+	errorMessageStyle = lipgloss.NewStyle().
+				Foreground(lipgloss.Color("160")).
+				Bold(true)
+	titleBarStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("252")).
+			Bold(true)
+	statusBarContainerStyle = lipgloss.NewStyle().
+				Width(100).
+				Padding(0, 0)
 )
 
 const (
@@ -108,6 +121,9 @@ type TodoTableModel struct {
 	bulkActionActive bool
 	textInput        textinput.Model
 	showArchived     bool
+	showAll          bool
+	showArchivedOnly bool
+	statusMessage    string
 }
 
 func NewTodoTable(todoList *model.TodoList) TodoTableModel {
@@ -164,9 +180,30 @@ func NewTodoTable(todoList *model.TodoList) TodoTableModel {
 		bulkActionActive: false,
 		textInput:        ti,
 		showArchived:     showArchived,
+		showAll:          true,
+		showArchivedOnly: false,
+		statusMessage:    "Welcome to Togo!",
 	}
 	m.updateRows()
 	return m
+}
+
+func (m *TodoTableModel) SetShowArchivedOnly(show bool) {
+	m.showArchivedOnly = show
+	m.showAll = false
+	m.updateRows()
+}
+
+func (m *TodoTableModel) SetShowAll(show bool) {
+	m.showAll = show
+	m.showArchivedOnly = false
+	m.updateRows()
+}
+
+func (m *TodoTableModel) SetShowActiveOnly(show bool) {
+	m.showAll = false
+	m.showArchivedOnly = false
+	m.updateRows()
 }
 
 func (m *TodoTableModel) updateRows() {
@@ -198,7 +235,17 @@ func (m *TodoTableModel) updateRows() {
 		{Title: "Created", Width: createdAtColWidth},
 	})
 	var rows []table.Row
-	for _, todo := range m.todoList.Todos {
+	var filteredTodos []model.Todo
+
+	if m.showAll {
+		filteredTodos = m.todoList.Todos
+	} else if m.showArchivedOnly {
+		filteredTodos = m.todoList.GetArchivedTodos()
+	} else {
+		filteredTodos = m.todoList.GetActiveTodos()
+	}
+
+	for _, todo := range filteredTodos {
 		checkbox := checkboxEmpty
 		if m.selectedTodoIDs[todo.ID] {
 			checkbox = checkboxFilled
@@ -220,18 +267,13 @@ func (m *TodoTableModel) updateRows() {
 }
 
 func (m TodoTableModel) findTodoByID(id int) *model.Todo {
-	for _, todo := range m.todoList.Todos {
-		if todo.ID == id {
-			return &todo
-		}
-	}
-	return nil
+	return m.todoList.GetTodoByID(id)
 }
 
 func (m TodoTableModel) findTodoByTitle(title string) *model.Todo {
-	for _, todo := range m.todoList.Todos {
+	for i, todo := range m.todoList.Todos {
 		if todo.Title == title {
-			return &todo
+			return &m.todoList.Todos[i]
 		}
 	}
 	return nil
@@ -266,16 +308,33 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "y", "Y":
 				if m.mode == ModeDeleteConfirm {
 					if len(m.selectedTodoIDs) > 0 && m.bulkActionActive {
+						count := len(m.selectedTodoIDs)
 						for id := range m.selectedTodoIDs {
 							m.todoList.Delete(id)
 						}
 						m.selectedTodoIDs = make(map[int]bool)
 						m.bulkActionActive = false
+						m.SetStatusMessage(fmt.Sprintf("%d tasks deleted", count))
 					} else {
+						found := false
 						for i, todo := range m.todoList.Todos {
-							if todo.Title == m.actionTitle {
+							if todo.Title == m.actionTitle || strings.Contains(m.actionTitle, todo.Title) {
 								m.todoList.Todos = append(m.todoList.Todos[:i], m.todoList.Todos[i+1:]...)
+								found = true
+								m.SetStatusMessage("Task deleted")
 								break
+							}
+						}
+						if !found {
+							id, err := strconv.Atoi(m.actionTitle)
+							if err == nil {
+								for _, todo := range m.todoList.Todos {
+									if todo.ID == id {
+										m.todoList.Delete(id)
+										m.SetStatusMessage("Task deleted")
+										break
+									}
+								}
 							}
 						}
 					}
@@ -314,6 +373,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.todoList.Add(title)
 					m.textInput.Reset()
 					m.updateRows()
+					m.SetStatusMessage("New task added")
 				}
 				m.mode = ModeNormal
 				return m, nil
@@ -334,8 +394,10 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "enter":
 				if len(m.table.Rows()) > 0 {
 					selectedTitle := m.table.SelectedRow()[1]
+					cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+
 					for _, todo := range m.todoList.Todos {
-						if todo.Title == selectedTitle {
+						if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
 							m.mode = ModeViewDetail
 							m.viewTaskID = todo.ID
 							break
@@ -345,14 +407,35 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "t":
 				if len(m.table.Rows()) > 0 {
 					if len(m.selectedTodoIDs) > 0 && m.bulkActionActive {
+						count := 0
 						for id := range m.selectedTodoIDs {
-							m.todoList.Toggle(id)
+							todo := m.findTodoByID(id)
+							if todo != nil {
+								if todo.Archived {
+									m.todoList.Unarchive(id)
+									count++
+								} else {
+									m.todoList.Toggle(id)
+									count++
+								}
+							}
+						}
+						if count > 0 {
+							m.SetStatusMessage(fmt.Sprintf("%d tasks updated", count))
 						}
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
+						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+
 						for _, todo := range m.todoList.Todos {
-							if todo.Title == selectedTitle {
-								m.todoList.Toggle(todo.ID)
+							if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
+								if todo.Archived {
+									m.todoList.Unarchive(todo.ID)
+									m.SetStatusMessage("Task unarchived")
+								} else {
+									m.todoList.Toggle(todo.ID)
+									m.SetStatusMessage("Task updated")
+								}
 								break
 							}
 						}
@@ -362,25 +445,35 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "n":
 				if len(m.table.Rows()) > 0 {
 					if len(m.selectedTodoIDs) > 0 && m.bulkActionActive {
+						count := 0
 						for id := range m.selectedTodoIDs {
 							todo := m.findTodoByID(id)
 							if todo != nil {
 								if todo.Archived {
 									m.todoList.Unarchive(id)
+									count++
 								} else {
 									m.todoList.Archive(id)
+									count++
 								}
 							}
+						}
+						if count > 0 {
+							m.SetStatusMessage(fmt.Sprintf("%d tasks updated", count))
 						}
 						m.updateRows()
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
+						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+
 						for _, todo := range m.todoList.Todos {
-							if todo.Title == selectedTitle {
+							if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
 								if todo.Archived {
 									m.todoList.Unarchive(todo.ID)
+									m.SetStatusMessage("Task unarchived")
 								} else {
 									m.todoList.Archive(todo.ID)
+									m.SetStatusMessage("Task archived")
 								}
 								m.updateRows()
 								break
@@ -399,26 +492,38 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.confirmAction = "delete"
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
+						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+
 						m.mode = ModeDeleteConfirm
 						m.confirmAction = "delete"
-						m.actionTitle = selectedTitle
+						m.actionTitle = cleanTitle
 					}
 				}
 			case " ":
 				if len(m.table.Rows()) > 0 {
-					selectedTitle := m.table.SelectedRow()[1]
-					for _, todo := range m.todoList.Todos {
-						if todo.Title == selectedTitle {
+					selectedIndex := m.table.Cursor()
+					if selectedIndex >= 0 && selectedIndex < len(m.todoList.Todos) {
+						var filteredTodos []model.Todo
+
+						if m.showAll {
+							filteredTodos = m.todoList.Todos
+						} else if m.showArchivedOnly {
+							filteredTodos = m.todoList.GetArchivedTodos()
+						} else {
+							filteredTodos = m.todoList.GetActiveTodos()
+						}
+
+						if selectedIndex < len(filteredTodos) {
+							todo := filteredTodos[selectedIndex]
 							if m.selectedTodoIDs[todo.ID] {
 								delete(m.selectedTodoIDs, todo.ID)
 							} else {
 								m.selectedTodoIDs[todo.ID] = true
 							}
-							break
+							m.bulkActionActive = len(m.selectedTodoIDs) > 0
+							m.updateRows()
 						}
 					}
-					m.bulkActionActive = len(m.selectedTodoIDs) > 0
-					m.updateRows()
 					return m, nil
 				}
 			}
@@ -479,13 +584,34 @@ func (m TodoTableModel) View() string {
 	if len(m.todoList.Todos) == 0 {
 		return baseStyle.Render("No tasks found. Press 'a' to add a new task!")
 	}
+
 	var helpText string
-	listTitle := "Active Tasks"
-	if m.showArchived {
+	var listTitle string
+
+	if m.showArchivedOnly {
 		listTitle = "Archived Tasks"
+	} else if m.showAll {
+		listTitle = "All Tasks"
+	} else {
+		listTitle = "Active Tasks"
 	}
+
+	leftSide := titleBarStyle.Render(listTitle)
+	rightSide := successMessageStyle.Render(m.statusMessage)
+
+	statusBar := lipgloss.JoinHorizontal(
+		lipgloss.Center,
+		leftSide,
+		lipgloss.PlaceHorizontal(
+			m.width-lipgloss.Width(leftSide)-4,
+			lipgloss.Right,
+			rightSide,
+		),
+	)
+
 	if m.bulkActionActive {
-		helpText = "\n" + listTitle + " - Bulk Mode:" +
+		helpText = "\n" + statusBar + "\n" +
+			"Bulk Mode:" +
 			"\n→ t: toggle completion for all selected" +
 			"\n→ n: toggle archive/unarchive for selected" +
 			"\n→ d: delete selected" +
@@ -494,8 +620,8 @@ func (m TodoTableModel) View() string {
 			"\n→ a: add new task" +
 			"\n→ q: quit"
 	} else {
-		helpText = "\n" + listTitle + ":" +
-			"\n→ t: toggle completion" +
+		helpText = "\n" + statusBar + "\n" +
+			"→ t: toggle completion" +
 			"\n→ n: toggle archive/unarchive" +
 			"\n→ d: delete" +
 			"\n→ space: select" +
@@ -503,6 +629,11 @@ func (m TodoTableModel) View() string {
 			"\n→ a: add new task" +
 			"\n→ q: quit"
 	}
+
 	help := helpStyle.Render(helpText)
 	return baseStyle.Render(m.table.View()) + help
+}
+
+func (m *TodoTableModel) SetStatusMessage(message string) {
+	m.statusMessage = message
 }

@@ -5,8 +5,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ashkansamadiyan/togo/model"
-
 	"github.com/spf13/cobra"
 )
 
@@ -21,16 +19,11 @@ var addCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		title := strings.Join(args, " ")
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			fmt.Println("Error loading todos:", err)
-			os.Exit(1)
-		}
+
+		todoList := loadTodoListOrExit()
 		todo := todoList.Add(title)
-		if err := todoList.Save(TodoFileName); err != nil {
-			fmt.Println("Error saving todos:", err)
-			os.Exit(1)
-		}
+		saveTodoListOrExit(todoList)
+
 		fmt.Printf("Todo added successfully with ID: %d\n", todo.ID)
 		fmt.Printf("Title: %s\n", todo.Title)
 	},
