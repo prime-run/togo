@@ -27,25 +27,25 @@ You can use:
 		}
 		archivedFlag, _ := cmd.Flags().GetBool("archived")
 		allFlag, _ := cmd.Flags().GetBool("all")
-		var filteredList *model.TodoList
+
+		// Pass the actual todoList to the UI, along with filter information
+		m := ui.NewTodoTable(todoList)
+
+		// Set the filter mode
 		if archivedFlag {
-			filteredList = &model.TodoList{
-				Todos:  todoList.GetArchivedTodos(),
-				NextID: todoList.NextID,
-			}
+			m.SetShowArchivedOnly(true)
 		} else if allFlag {
-			filteredList = todoList
+			m.SetShowAll(true)
 		} else {
-			filteredList = &model.TodoList{
-				Todos:  todoList.GetActiveTodos(),
-				NextID: todoList.NextID,
-			}
+			m.SetShowActiveOnly(true)
 		}
-		m := ui.NewTodoTable(filteredList)
+
 		if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 			fmt.Println("Error running program:", err)
 			os.Exit(1)
 		}
+
+		// Save the original todoList which contains all modifications
 		if err := todoList.Save(TodoFileName); err != nil {
 			fmt.Println("Error saving todos:", err)
 			os.Exit(1)
