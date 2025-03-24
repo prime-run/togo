@@ -16,15 +16,12 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete a todo",
 	Long:  `Delete a todo from your list using its title.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			fmt.Println("Error loading todos:", err)
-			os.Exit(1)
+		todoList := loadTodoListOrExit()
+
+		if checkEmptyTodoList(todoList, "No todos found. Add some todos with the 'add' command.") {
+			return
 		}
-		if len(todoList.Todos) == 0 {
-			fmt.Println("No todos found. Add some todos with the 'add' command.")
-			os.Exit(1)
-		}
+
 		var todoTitle string
 		if len(args) > 0 {
 			todoTitle = args[0]
@@ -32,10 +29,7 @@ var deleteCmd = &cobra.Command{
 			if found {
 				if confirmDelete(todo.Title) {
 					todoList.Delete(todo.ID)
-					if err := todoList.Save(TodoFileName); err != nil {
-						fmt.Println("Error saving todos:", err)
-						os.Exit(1)
-					}
+					saveTodoListOrExit(todoList)
 					fmt.Printf("Todo \"%s\" deleted successfully\n", todo.Title)
 				}
 				return
@@ -46,10 +40,7 @@ var deleteCmd = &cobra.Command{
 					if todo.ID == id {
 						if confirmDelete(todo.Title) {
 							todoList.Delete(id)
-							if err := todoList.Save(TodoFileName); err != nil {
-								fmt.Println("Error saving todos:", err)
-								os.Exit(1)
-							}
+							saveTodoListOrExit(todoList)
 							fmt.Printf("Todo \"%s\" deleted successfully\n", todo.Title)
 						}
 						return
@@ -68,10 +59,7 @@ var deleteCmd = &cobra.Command{
 			} else if len(matches) == 1 {
 				if confirmDelete(matches[0].Title) {
 					todoList.Delete(matches[0].ID)
-					if err := todoList.Save(TodoFileName); err != nil {
-						fmt.Println("Error saving todos:", err)
-						os.Exit(1)
-					}
+					saveTodoListOrExit(todoList)
 					fmt.Printf("Todo \"%s\" deleted successfully\n", matches[0].Title)
 				}
 				return
@@ -83,10 +71,7 @@ var deleteCmd = &cobra.Command{
 				}
 				if confirmDelete(selectedTodo.Title) {
 					todoList.Delete(selectedTodo.ID)
-					if err := todoList.Save(TodoFileName); err != nil {
-						fmt.Println("Error saving todos:", err)
-						os.Exit(1)
-					}
+					saveTodoListOrExit(todoList)
 					fmt.Printf("Todo \"%s\" deleted successfully\n", selectedTodo.Title)
 				}
 				return
@@ -104,10 +89,7 @@ var deleteCmd = &cobra.Command{
 			}
 			if confirmDelete(selectedTodo.Title) {
 				todoList.Delete(selectedTodo.ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" deleted successfully\n", selectedTodo.Title)
 			}
 		}
@@ -116,11 +98,10 @@ var deleteCmd = &cobra.Command{
 		if len(args) != 0 {
 			return nil, cobra.ShellCompDirectiveNoFileComp
 		}
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			return nil, cobra.ShellCompDirectiveNoFileComp
-		}
+
+		todoList := loadTodoListOrExit()
 		titles := todoList.GetTodoTitles()
+
 		if toComplete != "" {
 			var filtered []string
 			for _, title := range titles {
