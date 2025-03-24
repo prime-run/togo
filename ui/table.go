@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/ashkansamadiyan/togo/model"
@@ -108,6 +109,8 @@ type TodoTableModel struct {
 	bulkActionActive bool
 	textInput        textinput.Model
 	showArchived     bool
+	showAll          bool
+	showArchivedOnly bool
 }
 
 func NewTodoTable(todoList *model.TodoList) TodoTableModel {
@@ -164,9 +167,32 @@ func NewTodoTable(todoList *model.TodoList) TodoTableModel {
 		bulkActionActive: false,
 		textInput:        ti,
 		showArchived:     showArchived,
+		showAll:          true,
+		showArchivedOnly: false,
 	}
 	m.updateRows()
 	return m
+}
+
+// SetShowArchivedOnly sets the filter to show only archived todos
+func (m *TodoTableModel) SetShowArchivedOnly(show bool) {
+	m.showArchivedOnly = show
+	m.showAll = false
+	m.updateRows()
+}
+
+// SetShowAll sets the filter to show all todos
+func (m *TodoTableModel) SetShowAll(show bool) {
+	m.showAll = show
+	m.showArchivedOnly = false
+	m.updateRows()
+}
+
+// SetShowActiveOnly sets the filter to show only active (non-archived) todos
+func (m *TodoTableModel) SetShowActiveOnly(show bool) {
+	m.showAll = false
+	m.showArchivedOnly = false
+	m.updateRows()
 }
 
 func (m *TodoTableModel) updateRows() {
@@ -198,7 +224,18 @@ func (m *TodoTableModel) updateRows() {
 		{Title: "Created", Width: createdAtColWidth},
 	})
 	var rows []table.Row
-	for _, todo := range m.todoList.Todos {
+	var filteredTodos []model.Todo
+
+	// Apply filters
+	if m.showAll {
+		filteredTodos = m.todoList.Todos
+	} else if m.showArchivedOnly {
+		filteredTodos = m.todoList.GetArchivedTodos()
+	} else {
+		filteredTodos = m.todoList.GetActiveTodos()
+	}
+
+	for _, todo := range filteredTodos {
 		checkbox := checkboxEmpty
 		if m.selectedTodoIDs[todo.ID] {
 			checkbox = checkboxFilled
@@ -220,18 +257,18 @@ func (m *TodoTableModel) updateRows() {
 }
 
 func (m TodoTableModel) findTodoByID(id int) *model.Todo {
-	for _, todo := range m.todoList.Todos {
+	for i, todo := range m.todoList.Todos {
 		if todo.ID == id {
-			return &todo
+			return &m.todoList.Todos[i]
 		}
 	}
 	return nil
 }
 
 func (m TodoTableModel) findTodoByTitle(title string) *model.Todo {
-	for _, todo := range m.todoList.Todos {
+	for i, todo := range m.todoList.Todos {
 		if todo.Title == title {
-			return &todo
+			return &m.todoList.Todos[i]
 		}
 	}
 	return nil
@@ -272,10 +309,18 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.selectedTodoIDs = make(map[int]bool)
 						m.bulkActionActive = false
 					} else {
+						found := false
 						for i, todo := range m.todoList.Todos {
-							if todo.Title == m.actionTitle {
+							if todo.Title == m.actionTitle || strings.Contains(m.actionTitle, todo.Title) {
 								m.todoList.Todos = append(m.todoList.Todos[:i], m.todoList.Todos[i+1:]...)
+								found = true
 								break
+							}
+						}
+						if !found {
+							id, err := strconv.Atoi(m.actionTitle)
+							if err == nil {
+								m.todoList.Delete(id)
 							}
 						}
 					}
@@ -334,8 +379,12 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "enter":
 				if len(m.table.Rows()) > 0 {
 					selectedTitle := m.table.SelectedRow()[1]
+					// strip archived formatting from the title if necessary
+					//NOTE: if this project ctually gets more ppular i might drop lipgloss and raw dog styles! I lowkey feel like im writing js!!!!
+					cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+
 					for _, todo := range m.todoList.Todos {
-						if todo.Title == selectedTitle {
+						if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
 							m.mode = ModeViewDetail
 							m.viewTaskID = todo.ID
 							break
@@ -346,13 +395,26 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if len(m.table.Rows()) > 0 {
 					if len(m.selectedTodoIDs) > 0 && m.bulkActionActive {
 						for id := range m.selectedTodoIDs {
-							m.todoList.Toggle(id)
+							todo := m.findTodoByID(id)
+							if todo != nil {
+								if todo.Archived {
+									m.todoList.Unarchive(id)
+								} else {
+									m.todoList.Toggle(id)
+								}
+							}
 						}
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
+						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+
 						for _, todo := range m.todoList.Todos {
-							if todo.Title == selectedTitle {
-								m.todoList.Toggle(todo.ID)
+							if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
+								if todo.Archived {
+									m.todoList.Unarchive(todo.ID)
+								} else {
+									m.todoList.Toggle(todo.ID)
+								}
 								break
 							}
 						}
@@ -375,8 +437,10 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.updateRows()
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
+						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+
 						for _, todo := range m.todoList.Todos {
-							if todo.Title == selectedTitle {
+							if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
 								if todo.Archived {
 									m.todoList.Unarchive(todo.ID)
 								} else {
@@ -399,16 +463,20 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.confirmAction = "delete"
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
+						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+
 						m.mode = ModeDeleteConfirm
 						m.confirmAction = "delete"
-						m.actionTitle = selectedTitle
+						m.actionTitle = cleanTitle
 					}
 				}
 			case " ":
 				if len(m.table.Rows()) > 0 {
 					selectedTitle := m.table.SelectedRow()[1]
+					cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+
 					for _, todo := range m.todoList.Todos {
-						if todo.Title == selectedTitle {
+						if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
 							if m.selectedTodoIDs[todo.ID] {
 								delete(m.selectedTodoIDs, todo.ID)
 							} else {
@@ -480,10 +548,16 @@ func (m TodoTableModel) View() string {
 		return baseStyle.Render("No tasks found. Press 'a' to add a new task!")
 	}
 	var helpText string
-	listTitle := "Active Tasks"
-	if m.showArchived {
+	var listTitle string
+
+	if m.showArchivedOnly {
 		listTitle = "Archived Tasks"
+	} else if m.showAll {
+		listTitle = "All Tasks"
+	} else {
+		listTitle = "Active Tasks"
 	}
+
 	if m.bulkActionActive {
 		helpText = "\n" + listTitle + " - Bulk Mode:" +
 			"\n→ t: toggle completion for all selected" +
