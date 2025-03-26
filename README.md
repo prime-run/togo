@@ -215,4 +215,4 @@ Togo stores all your data in a simple JSON file at `~/.togo/todos.json`.
 
 ## License
 
-This project is licensed under the do what ever u want with it - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under MIT - see the [LICENSE](LICENSE) file for details. 
