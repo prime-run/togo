@@ -9,7 +9,9 @@
 go.work
 
 # Go compiled binary
-/togo
+togo/
+scripts/
+dev-scripts/
 
 # CMake build files
 build/
@@ -21,7 +23,7 @@ Makefile.cmake
 !CMakeLists.txt
 
 # Binary directory
-/bin/
+/bin
 
 # Dependency directories
 vendor/

@@ -2,13 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
-
 	"github.com/manifoldco/promptui"
 	"github.com/prime-run/togo/model"
 	"github.com/spf13/cobra"
+	"os"
+	"strconv"
+	"strings"
 )
 
 var toggleCmd = &cobra.Command{
@@ -68,21 +67,26 @@ var toggleCmd = &cobra.Command{
 					}
 				}
 			}
+
 			var matches []model.Todo
+
 			for _, todo := range todoList.Todos {
 				if strings.Contains(strings.ToLower(todo.Title), strings.ToLower(todoTitle)) {
 					matches = append(matches, todo)
 				}
 			}
+
 			if len(matches) == 0 {
 				fmt.Printf("Error: No todos found matching \"%s\"\n", todoTitle)
 				os.Exit(1)
 			} else if len(matches) == 1 {
 				todoList.Toggle(matches[0].ID)
 				status := "Completed"
+
 				if matches[0].Completed {
 					status = "Pending"
 				}
+
 				if err := todoList.Save(TodoFileName); err != nil {
 					fmt.Println("Error saving todos:", err)
 					os.Exit(1)
@@ -90,27 +94,33 @@ var toggleCmd = &cobra.Command{
 				fmt.Printf("Todo \"%s\" toggled successfully\n", matches[0].Title)
 				fmt.Printf("Status: %s\n", status)
 				return
+
 			} else {
 				selectedTodo, err := selectTodoForToggle(matches)
+
 				if err != nil {
 					fmt.Println("Operation cancelled")
 					os.Exit(0)
 				}
 				todoList.Toggle(selectedTodo.ID)
 				var status string
+
 				if !selectedTodo.Completed {
 					status = "Completed"
 				} else {
 					status = "Pending"
 				}
+
 				if err := todoList.Save(TodoFileName); err != nil {
 					fmt.Println("Error saving todos:", err)
 					os.Exit(1)
 				}
 				fmt.Printf("Todo \"%s\" toggled successfully\n", selectedTodo.Title)
 				fmt.Printf("Status: %s\n", status)
+
 				return
 			}
+
 		} else {
 			todos := todoList.Todos
 			if len(todos) == 0 {

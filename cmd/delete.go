@@ -2,13 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
-
 	"github.com/manifoldco/promptui"
 	"github.com/prime-run/togo/model"
 	"github.com/spf13/cobra"
+	"os"
+	"strconv"
+	"strings"
 )
 
 var deleteCmd = &cobra.Command{

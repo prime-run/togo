@@ -2,13 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
-
 	"github.com/manifoldco/promptui"
 	"github.com/prime-run/togo/model"
 	"github.com/spf13/cobra"
+	"os"
+	"strconv"
+	"strings"
 )
 
 var unarchiveCmd = &cobra.Command{
@@ -17,14 +16,17 @@ var unarchiveCmd = &cobra.Command{
 	Long:  `Unarchive a todo from your archive using its title. This returns it to the active list.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		todoList, err := model.LoadTodoList(TodoFileName)
+
 		if err != nil {
 			fmt.Println("Error loading todos:", err)
 			os.Exit(1)
 		}
+
 		if len(todoList.GetArchivedTodos()) == 0 {
 			fmt.Println("No archived todos found.")
 			os.Exit(1)
 		}
+
 		if len(args) > 0 {
 			todoTitle := args[0]
 			todo, found := todoList.FindByTitle(todoTitle, false)
@@ -38,6 +40,7 @@ var unarchiveCmd = &cobra.Command{
 				return
 			}
 			id, err := strconv.Atoi(todoTitle)
+
 			if err == nil {
 				for _, todo := range todoList.Todos {
 					if todo.ID == id && todo.Archived {
@@ -84,23 +87,30 @@ var unarchiveCmd = &cobra.Command{
 			}
 		} else {
 			todos := todoList.GetArchivedTodos()
+
 			if len(todos) == 0 {
 				fmt.Println("No archived todos found.")
 				os.Exit(0)
 			}
+
 			selectedTodo, err := selectTodoForUnarchive(todos)
+
 			if err != nil {
 				fmt.Println("Operation cancelled")
 				os.Exit(0)
 			}
+
 			todoList.Unarchive(selectedTodo.ID)
+
 			if err := todoList.Save(TodoFileName); err != nil {
 				fmt.Println("Error saving todos:", err)
 				os.Exit(1)
 			}
+
 			fmt.Printf("Todo \"%s\" unarchived successfully\n", selectedTodo.Title)
 		}
 	},
+
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if len(args) != 0 {
 			return nil, cobra.ShellCompDirectiveNoFileComp

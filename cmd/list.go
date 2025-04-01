@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"github.com/prime-run/togo/ui"
-
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/prime-run/togo/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +14,7 @@ You can use:
 - list: to show active todos
 - list --archived: to show archived todos
 - list --all: to show both active and archived todos`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 		todoList := loadTodoListOrExit()
 
@@ -25,10 +25,8 @@ You can use:
 		archivedFlag, _ := cmd.Flags().GetBool("archived")
 		allFlag, _ := cmd.Flags().GetBool("all")
 
-		// Pass the actual todoList to the UI, along with filter information
 		m := ui.NewTodoTable(todoList)
 
-		// Set the filter mode
 		if archivedFlag {
 			m.SetShowArchivedOnly(true)
 		} else if allFlag {
@@ -39,8 +37,6 @@ You can use:
 
 		_, err := tea.NewProgram(m, tea.WithAltScreen()).Run()
 		handleErrorAndExit(err, "Error running program:")
-
-		// Save the original todoList which contains all modifications
 		saveTodoListOrExit(todoList)
 	},
 }
