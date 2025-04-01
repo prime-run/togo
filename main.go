@@ -25,7 +25,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ashkansamadiyan/togo/cmd"
+	"github.com/prime-run/togo/cmd"
 )
 
 func main() {

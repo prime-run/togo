@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ashkansamadiyan/togo/model"
 	"github.com/manifoldco/promptui"
+	"github.com/prime-run/togo/model"
 	"github.com/spf13/cobra"
 )
 
