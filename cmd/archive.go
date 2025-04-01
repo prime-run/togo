@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/manifoldco/promptui"
@@ -21,85 +20,30 @@ var archiveCmd = &cobra.Command{
 			fmt.Println("Error loading todos:", err)
 			os.Exit(1)
 		}
+
 		if len(todoList.GetActiveTodos()) == 0 {
 			fmt.Println("No active todos found. Add some todos with the 'add' command.")
 			os.Exit(1)
 		}
+
+		var todo *model.Todo
 		if len(args) > 0 {
-			todoTitle := args[0]
-			todo, found := todoList.FindByTitle(todoTitle, false)
-			if found && !todo.Archived {
-				todoList.Archive(todo.ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
-				fmt.Printf("Todo \"%s\" archived successfully\n", todoTitle)
-				return
-			}
-			id, err := strconv.Atoi(todoTitle)
-			if err == nil {
-				for _, todo := range todoList.Todos {
-					if todo.ID == id && !todo.Archived {
-						todoList.Archive(id)
-						if err := todoList.Save(TodoFileName); err != nil {
-							fmt.Println("Error saving todos:", err)
-							os.Exit(1)
-						}
-						fmt.Printf("Todo \"%s\" archived successfully\n", todo.Title)
-						return
-					}
-				}
-			}
-			var matches []model.Todo
-			for _, todo := range todoList.GetActiveTodos() {
-				if strings.Contains(strings.ToLower(todo.Title), strings.ToLower(todoTitle)) {
-					matches = append(matches, todo)
-				}
-			}
-			if len(matches) == 0 {
-				fmt.Printf("Error: No active todos found matching \"%s\"\n", todoTitle)
-				os.Exit(1)
-			} else if len(matches) == 1 {
-				todoList.Archive(matches[0].ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
-				fmt.Printf("Todo \"%s\" archived successfully\n", matches[0].Title)
-				return
-			} else {
-				selectedTodo, err := selectTodoForArchive(matches)
-				if err != nil {
-					fmt.Println("Operation cancelled")
-					os.Exit(0)
-				}
-				todoList.Archive(selectedTodo.ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
-				fmt.Printf("Todo \"%s\" archived successfully\n", selectedTodo.Title)
-				return
-			}
+			todo, err = findTodoByTitleOrID(todoList, args[0], false)
 		} else {
-			todos := todoList.GetActiveTodos()
-			if len(todos) == 0 {
-				fmt.Println("No active todos found. Add some todos with the 'add' command.")
-				os.Exit(0)
-			}
-			selectedTodo, err := selectTodoForArchive(todos)
-			if err != nil {
-				fmt.Println("Operation cancelled")
-				os.Exit(0)
-			}
-			todoList.Archive(selectedTodo.ID)
-			if err := todoList.Save(TodoFileName); err != nil {
-				fmt.Println("Error saving todos:", err)
-				os.Exit(1)
-			}
-			fmt.Printf("Todo \"%s\" archived successfully\n", selectedTodo.Title)
+			todo, err = selectTodoFromList(todoList.GetActiveTodos())
 		}
+
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		todoList.Archive(todo.ID)
+		if err := todoList.Save(TodoFileName); err != nil {
+			fmt.Println("Error saving todos:", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Todo \"%s\" archived successfully\n", todo.Title)
 	},
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if len(args) != 0 {
