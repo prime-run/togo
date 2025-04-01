@@ -125,7 +125,7 @@ togo add -h
 The simplest way to install Togo:
 
 ```bash
-go install github.com/ashkansamadiyan/togo@latest
+go install github.com/prime-run/togo@latest
 ```
 
 Make sure `$GOPATH/bin` is in your PATH to access the installed binary.
@@ -134,7 +134,7 @@ Make sure `$GOPATH/bin` is in your PATH to access the installed binary.
 
 ```bash
 # Clone the repository
-git clone https://github.com/ashkansamadiyan/togo.git
+git clone https://github.com/prime-run/togo.git
 cd togo
 
 # Build and install manually
@@ -146,7 +146,7 @@ go install     # Installs to $GOPATH/bin
 
 ```bash
 # Clone the repository
-git clone https://github.com/ashkansamadiyan/togo.git
+git clone https://github.com/prime-run/togo.git
 cd togo
 
 # Install to GOPATH/bin (includes automatic shell completion)

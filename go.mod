@@ -1,4 +1,4 @@
-module github.com/ashkansamadiyan/togo
+module github.com/prime-run/togo
 
 go 1.24.1
 

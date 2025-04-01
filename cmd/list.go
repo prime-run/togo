@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/ashkansamadiyan/togo/ui"
+	"github.com/prime-run/togo/ui"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"

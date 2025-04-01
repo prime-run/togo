@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ashkansamadiyan/togo/model"
+	"github.com/prime-run/togo/model"
 )
 
 func loadTodoListOrExit() *model.TodoList {

@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ashkansamadiyan/togo/model"
 	"github.com/charmbracelet/bubbles/table"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/prime-run/togo/model"
 )
 
 var (
