@@ -16,7 +16,8 @@ var (
 	baseStyle = lipgloss.NewStyle().
 			BorderStyle(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color("240")).
-			Padding(0, 1)
+			Padding(0, 1).
+			Width(80) // Default width, dynamically adjusted later
 	titleStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("252")).
 			Bold(false)
@@ -90,6 +91,10 @@ var (
 	statusBarContainerStyle = lipgloss.NewStyle().
 				Width(100).
 				Padding(0, 0)
+	tableContainerStyle = lipgloss.NewStyle().
+				BorderStyle(lipgloss.RoundedBorder()).
+				BorderForeground(lipgloss.Color("240")).
+				Padding(1, 2) // Add padding around the table
 )
 
 const (
@@ -207,33 +212,30 @@ func (m *TodoTableModel) SetShowActiveOnly(show bool) {
 }
 
 func (m *TodoTableModel) updateRows() {
-	tableBorderWidth := 4
+	// Dynamically calculate table width based on terminal width
+	availableWidth := m.width - 8 // Account for container padding and borders
+	if availableWidth < 40 {
+		availableWidth = 40 // Minimum width to ensure usability
+	}
+
+	// Adjust column widths dynamically
 	checkboxColWidth := 5
 	statusColWidth := 15
 	createdAtColWidth := 15
-	availableWidth := m.width - tableBorderWidth
 	titleColWidth := availableWidth - checkboxColWidth - statusColWidth - createdAtColWidth - 6
 	if titleColWidth < 20 {
-		titleColWidth = 20
-		if availableWidth-titleColWidth-statusColWidth-createdAtColWidth-6 < checkboxColWidth {
-			statusColWidth = 12
-			createdAtColWidth = 12
-		}
+		titleColWidth = 20 // Minimum title column width
 	}
-	totalTableWidth := checkboxColWidth + titleColWidth + statusColWidth + createdAtColWidth + tableBorderWidth + 6
-	if totalTableWidth > m.width {
-		titleColWidth = m.width - checkboxColWidth - statusColWidth - createdAtColWidth - tableBorderWidth - 6
-		if titleColWidth < 10 {
-			titleColWidth = 10
-		}
-	}
-	m.textInput.Width = titleColWidth
+
+	// Update table columns
 	m.table.SetColumns([]table.Column{
 		{Title: "✓", Width: checkboxColWidth},
 		{Title: "Title", Width: titleColWidth},
 		{Title: "Status", Width: statusColWidth},
 		{Title: "Created", Width: createdAtColWidth},
 	})
+
+	// Update rows
 	var rows []table.Row
 	var filteredTodos []model.Todo
 
@@ -264,6 +266,9 @@ func (m *TodoTableModel) updateRows() {
 		rows = append(rows, table.Row{checkbox, title, status, createdAt})
 	}
 	m.table.SetRows(rows)
+
+	// Update base style width dynamically
+	baseStyle.Width(availableWidth)
 }
 
 func (m TodoTableModel) findTodoByID(id int) *model.Todo {
@@ -631,7 +636,10 @@ func (m TodoTableModel) View() string {
 	}
 
 	help := helpStyle.Render(helpText)
-	return baseStyle.Render(m.table.View()) + help
+
+	// Wrap the table in a container with padding
+	tableView := tableContainerStyle.Render(m.table.View())
+	return tableView + help
 }
 
 func (m *TodoTableModel) SetStatusMessage(message string) {
