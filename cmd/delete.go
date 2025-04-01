@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/manifoldco/promptui"
@@ -22,76 +21,23 @@ var deleteCmd = &cobra.Command{
 			return
 		}
 
-		var todoTitle string
+		var todo *model.Todo
+		var err error
 		if len(args) > 0 {
-			todoTitle = args[0]
-			todo, found := todoList.FindByTitle(todoTitle, false)
-			if found {
-				if confirmDelete(todo.Title) {
-					todoList.Delete(todo.ID)
-					saveTodoListOrExit(todoList)
-					fmt.Printf("Todo \"%s\" deleted successfully\n", todo.Title)
-				}
-				return
-			}
-			id, err := strconv.Atoi(todoTitle)
-			if err == nil {
-				for _, todo := range todoList.Todos {
-					if todo.ID == id {
-						if confirmDelete(todo.Title) {
-							todoList.Delete(id)
-							saveTodoListOrExit(todoList)
-							fmt.Printf("Todo \"%s\" deleted successfully\n", todo.Title)
-						}
-						return
-					}
-				}
-			}
-			var matches []model.Todo
-			for _, todo := range todoList.Todos {
-				if strings.Contains(strings.ToLower(todo.Title), strings.ToLower(todoTitle)) {
-					matches = append(matches, todo)
-				}
-			}
-			if len(matches) == 0 {
-				fmt.Printf("Error: No todos found matching \"%s\"\n", todoTitle)
-				os.Exit(1)
-			} else if len(matches) == 1 {
-				if confirmDelete(matches[0].Title) {
-					todoList.Delete(matches[0].ID)
-					saveTodoListOrExit(todoList)
-					fmt.Printf("Todo \"%s\" deleted successfully\n", matches[0].Title)
-				}
-				return
-			} else {
-				selectedTodo, err := selectTodo(matches)
-				if err != nil {
-					fmt.Println("Operation cancelled")
-					os.Exit(0)
-				}
-				if confirmDelete(selectedTodo.Title) {
-					todoList.Delete(selectedTodo.ID)
-					saveTodoListOrExit(todoList)
-					fmt.Printf("Todo \"%s\" deleted successfully\n", selectedTodo.Title)
-				}
-				return
-			}
+			todo, err = findTodoByTitleOrID(todoList, args[0], false)
 		} else {
-			todos := todoList.Todos
-			if len(todos) == 0 {
-				fmt.Println("No todos found. Add some todos with the 'add' command.")
-				os.Exit(0)
-			}
-			selectedTodo, err := selectTodo(todos)
-			if err != nil {
-				fmt.Println("Operation cancelled")
-				os.Exit(0)
-			}
-			if confirmDelete(selectedTodo.Title) {
-				todoList.Delete(selectedTodo.ID)
-				saveTodoListOrExit(todoList)
-				fmt.Printf("Todo \"%s\" deleted successfully\n", selectedTodo.Title)
-			}
+			todo, err = selectTodoFromList(todoList.Todos)
+		}
+
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		if confirmDelete(todo.Title) {
+			todoList.Delete(todo.ID)
+			saveTodoListOrExit(todoList)
+			fmt.Printf("Todo \"%s\" deleted successfully\n", todo.Title)
 		}
 	},
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
