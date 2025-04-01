@@ -75,7 +75,7 @@ func findTodoByTitleOrID(todoList *model.TodoList, input string, archived bool) 
 		if err != nil {
 			return nil, fmt.Errorf("operation cancelled")
 		}
-		return selectedTodo, nil // Fix: Return selectedTodo directly
+		return selectedTodo, nil
 	}
 }
 
