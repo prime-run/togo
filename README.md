@@ -6,8 +6,6 @@
 
 [![togo CLI Demo Video](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)](https://github.com/user-attachments/assets/14afdab1-2f6b-419c-9ace-958d8c167646)
 
-
-
 ## Why Togo Exists
 
 Ever been programming and had a brilliant idea or remembered an important task? You know the struggle - interrupting your flow means losing focus, but ignoring it risks forgetting something important. This is where Togo shines, especially for those of us with ADHD tendencies.
@@ -37,6 +35,7 @@ togo add should I use "s in my shell std inputs?
 
 togo add "Call the client about project scope"
 ```
+
 Then get right back to what you were doing. No more mental juggling or lost ideas.
 
 ### Managing Your Tasks
@@ -101,7 +100,6 @@ Shell will show only tasks containing "me" - perfect for quick selection.
 
 ![shellvdef](https://github.com/user-attachments/assets/011b51e0-aad0-4f9e-b782-73ef6be77f07)
 
-
 ### Available Commands
 
 - `togo add "Task description"` - Add a new task
@@ -148,15 +146,12 @@ go install     # Installs to $GOPATH/bin
 # Clone the repository
 git clone https://github.com/prime-run/togo.git
 cd togo
-
-# Install to GOPATH/bin (includes automatic shell completion)
 make install
-
-# OR install system-wide (requires sudo)
-make install-system
+# And follow the prompts
 ```
 
 All Make installation methods include automatic shell completion setup out of the box, so you can immediately use tab completion for commands and task names.
+In case your shell didn't get detected, you can run `togo completion --help`
 
 ## Shell Completion
 
@@ -177,7 +172,6 @@ togo completion zsh > ~/.zsh/completion/_togo
 source ~/.zshrc
 ```
 
-
 ### Bash
 
 ```bash
@@ -190,8 +184,6 @@ source ~/.bashrc
 togo completion bash > ~/.bash_completion
 source ~/.bash_completion
 ```
-
-
 
 ### Fish
 
@@ -210,9 +202,6 @@ yea, i dont think you PS guys need this tool :)
 
 Togo stores all your data in a simple JSON file at `~/.togo/todos.json`.
 
-
-
-
 ## License
 
-This project is licensed under MIT - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under MIT - see the [LICENSE](LICENSE) file for details.
