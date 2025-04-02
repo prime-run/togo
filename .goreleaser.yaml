@@ -1,0 +1,67 @@
+project_name: togo
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - "386"
+    main: ./main.go
+    binary: "togo-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+    ignore:
+      - goos: darwin
+        goarch: "386"
+
+archives:
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+
+nfpms:
+  - vendor: "Togo"
+    homepage: "https://github.com/prime-run/togo"
+    maintainer: "prime-run"
+    description: "togo: A termianl todo application built go"
+    license: "MIT"
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
+
+release:
+  github:
+    owner: prime-run
+    name: togo
+  prerelease: auto
+  draft: false
