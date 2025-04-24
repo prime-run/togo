@@ -6,7 +6,6 @@
 
 <h1 align="center">ToGo</h1>
 
-<h2 align="center">.</h2>
 
 <div align="center">	A fast, simple and beautifull termianl-based to-do manager with zero dependencies</div>
 
