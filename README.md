@@ -7,7 +7,7 @@
 <h1 align="center">ToGo</h1>
 
 
-<div align="center">	A fast, simple and beautifull termianl-based to-do manager with zero dependencies</div>
+<div align="center">	A fast, simple and beautiful terminal-based to-do manager with zero dependencies</div>
 
 <h2 align="center">.</h2>
 
@@ -33,7 +33,7 @@
 - [Features ✨](#features-)
 - [Installation 📥](#installation-)
   - [ArchLinux](#archlinux)
-  - [pre-built binaries (recomended)](#pre-built-binaries-recomended)
+  - [pre-built binaries (recommended)](#pre-built-binaries-recommended)
   - [Linux and Mac (x86_64):](#linux-and-mac-x86_64)
   - [Go Cli](#go-cli)
   - [make](#make)
@@ -84,7 +84,7 @@ yay -Sy togo
 paru -Sy togo
 ```
 
-### pre-built binaries (recomended)
+### pre-built binaries (recommended)
 
 Download the latest pre-built binaries for your operating system from the [Releases](https://github.com/prime-run/togo/releases) page.
 After downloading and extracting, ensure that ~/.local/bin is in your system's PATH environment variable. You can usually do this by adding the following line to your shell's configuration file (e.g., `.bashrc` , `.zshrc` ):
@@ -150,7 +150,7 @@ Add your first task:
 
 ```bash
 togo add should I use "s in my shell std inputs?"
-# or dont even add qutes
+# or dont even add quotes
 togo add Call the client about project scope
 ```
 
@@ -284,7 +284,7 @@ togo completion fish > ~/.config/fish/completions/togo.fish
 #### PowerShell
 
 ```powershell
-yea, i dont think you PS guys need this tool :)
+yeah, i don't think you PS guys need this tool :)
 ```
 
 ### Data Storage
