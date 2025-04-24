@@ -7,7 +7,7 @@
 <h1 align="center">ToGo</h1>
 
 
-<div align="center">	A fast, simple and beautiful terminal-based to-do manager with zero dependencies</div>
+<div align="center">	A blazingly fast, simple and beautiful terminal-based to-do manager </div>
 
 <h2 align="center">.</h2>
 
@@ -76,7 +76,7 @@
 
 ### ArchLinux
 
-togo is pushed to arch [AUR](https://aur.archlinux.org/packages/togo)
+togo is pushed to arch [AUR](https://aur.archlinux.org/packages/togo) with **zero** dependencies.
 
 ```bash
 yay -Sy togo
