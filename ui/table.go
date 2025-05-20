@@ -187,7 +187,7 @@ func NewTodoTable(todoList *model.TodoList) TodoTableModel {
 		showArchived:     showArchived,
 		showAll:          true,
 		showArchivedOnly: false,
-		statusMessage:    "Welcome to Togo!",
+		statusMessage:    "",
 	}
 	m.updateRows()
 	return m
