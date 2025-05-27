@@ -48,10 +48,6 @@
   - [Additional Options 📌](#additional-options-)
 - [Features In Depth 🧠](#features-in-depth-)
   - [Shell Completion](#shell-completion)
-    - [Zsh](#zsh)
-    - [Bash](#bash)
-    - [Fish](#fish)
-    - [PowerShell](#powershell)
   - [Data Storage](#data-storage)
 
 ---
