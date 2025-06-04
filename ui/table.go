@@ -491,12 +491,15 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.mode = ModeDeleteConfirm
 						m.confirmAction = "delete"
 					} else {
-						selectedTitle := m.table.SelectedRow()[1]
-						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+						selectedRow := m.table.SelectedRow()
+						if len(selectedRow) > 1 {
+							selectedTitle := selectedRow[1]
+							cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
 
-						m.mode = ModeDeleteConfirm
-						m.confirmAction = "delete"
-						m.actionTitle = cleanTitle
+							m.mode = ModeDeleteConfirm
+							m.confirmAction = "delete"
+							m.actionTitle = cleanTitle
+						}
 					}
 				}
 			case " ":
