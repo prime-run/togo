@@ -161,11 +161,11 @@ func LoadTodoList(filename string) (*TodoList, error) {
 }
 
 func getDataDir() (string, error) {
-	homeDir, err := os.UserHomeDir()
+	cacheDir, err := os.UserCacheDir()
 	if err != nil {
 		return "", fmt.Errorf("could not determine user home directory: %w", err)
 	}
-	dataDir := filepath.Join(homeDir, ".togo")
+	dataDir := filepath.Join(cacheDir, "togo")
 	return dataDir, nil
 }
 
