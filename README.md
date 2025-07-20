@@ -75,9 +75,9 @@
 togo is pushed to arch [AUR](https://aur.archlinux.org/packages/togo) with **zero** dependencies.
 
 ```bash
-yay -Sy togo
-#or
-paru -Sy togo
+yay -S togo
+# or
+paru -S togo
 ```
 
 ### pre-built binaries (recommended)
