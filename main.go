@@ -29,12 +29,9 @@ import (
 )
 
 func main() {
-	// Change to current working directory to support relative paths
 	if dir, err := os.Getwd(); err == nil {
 		os.Chdir(dir)
 	}
-
-	// Execute command
 	if err := cmd.Execute(); err != nil {
 		fmt.Println("Error:", err)
 		os.Exit(1)

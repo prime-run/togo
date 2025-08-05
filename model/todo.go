@@ -111,9 +111,7 @@ func (tl *TodoList) Delete(id int) bool {
 	if idx == -1 {
 		return false
 	}
-	// Remove element from slice
 	tl.Todos = append(tl.Todos[:idx], tl.Todos[idx+1:]...)
-	// Rebuild index since indexes have changed
 	tl.rebuildIndex()
 	return true
 }
@@ -155,7 +153,6 @@ func LoadTodoList(filename string) (*TodoList, error) {
 			tl.Todos[i].CreatedAt = time.Now()
 		}
 	}
-	// Initialize the ID map
 	tl.TodoByID = make(map[int]int)
 	for i, todo := range tl.Todos {
 		tl.TodoByID[todo.ID] = i
@@ -164,15 +161,14 @@ func LoadTodoList(filename string) (*TodoList, error) {
 }
 
 func getDataDir() (string, error) {
-	homeDir, err := os.UserHomeDir()
+	cacheDir, err := os.UserCacheDir()
 	if err != nil {
 		return "", fmt.Errorf("could not determine user home directory: %w", err)
 	}
-	dataDir := filepath.Join(homeDir, ".togo")
+	dataDir := filepath.Join(cacheDir, "togo")
 	return dataDir, nil
 }
 
-// GetTodoByID returns a pointer to a Todo by its ID
 func (tl *TodoList) GetTodoByID(id int) *Todo {
 	idx := tl.findIndexByID(id)
 	if idx == -1 {

@@ -13,8 +13,6 @@ var rootCmd = &cobra.Command{
 	Use:   "togo",
 	Short: "A simple todo application",
 	Long:  `A simple todo application that lets you manage your tasks from the terminal.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 		todoList := loadTodoListOrExit()
 
@@ -26,13 +24,10 @@ var rootCmd = &cobra.Command{
 		_, err := tea.NewProgram(tableModel, tea.WithAltScreen()).Run()
 		handleErrorAndExit(err, "Error running program:")
 
-		// Save the todos after any changes
 		saveTodoListOrExit(todoList)
 	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() error {
 	return rootCmd.Execute()
 }
