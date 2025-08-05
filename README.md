@@ -185,7 +185,7 @@ togo toggle
 Opens a selection list where you can choose from available tasks:
 
 <p align="center">
-<img src="250805_06h33m44s_screenshot" src="https://github.com/user-attachments/assets/aa0c3005-af4c-4f2e-bf4c-df6681050ad6"
+<img src="https://github.com/user-attachments/assets/aa0c3005-af4c-4f2e-bf4c-df6681050ad6"
   alt="main-togo-screen-shot"
   width="738">
   
