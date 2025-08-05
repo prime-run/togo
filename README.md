@@ -42,9 +42,6 @@
   - [Additional Options](#additional-options)
 - [Features In Depth](#features-in-depth)
   - [Shell Completion](#shell-completion)
-  - [Data Storage](#data-storage)
-- [Built With 🔧](#built-with-)
-- [License](#license)
 
 ---
 
