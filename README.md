@@ -29,7 +29,6 @@
   
 </div>
 
-<summary><strong>Table of Contents 📜</strong></summary>
 
 - [Features](#features-)
 - [Installation](#installation-)
@@ -38,7 +37,7 @@
   - [Linux and Mac (x86_64):](#linux-and-mac-x86_64)
   - [Go Cli](#go-cli)
   - [make](#make)
-- [Usage 🛠️](#usage-)
+- [Usage](#usage-)
   - [Managing Your Tasks](#managing-your-tasks)
     - [1. Interactive Mode](#1-interactive-mode)
     - [2. Command-Line Operations](#2-command-line-operations)
@@ -137,7 +136,7 @@ make
 
 All Make installation methods include automatic shell completion setup out of the box, so you can immediately use tab completion for commands and task names. In case your shell didn't get detected, you can run `togo completion --help`
 
-## Usage 🛠️
+## Usage
 
 Add your first task:
 
@@ -153,7 +152,7 @@ Togo offers two primary ways to manage your tasks:
 
 #### 1. Interactive Mode
 
-Open the interactive UI to work with your todos visually:
+The `TUI` to work with your todos visually and allows for bulk actions:
 
 ```bash
 togo
@@ -163,13 +162,7 @@ togo list --all     # All todos
 togo list --archived # Archived todos only
 ```
 
-The interactive mode shows helpful keyboard shortcuts right in the interface.
 
-<p align="center">
-<img src="https://github.com/user-attachments/assets/e75cb61e-00f5-4c5b-ae44-66727521d2c4"
-  alt="main-togo-screen-shot"
-  width="686" height="289">
-</p>
 
 #### 2. Command-Line Operations
 
@@ -192,9 +185,10 @@ togo toggle
 Opens a selection list where you can choose from available tasks:
 
 <p align="center">
-<img src="https://github.com/user-attachments/assets/fbcf3408-d568-4fd9-ad1e-71e31c64090a"
+<img src="250805_06h33m44s_screenshot" src="https://github.com/user-attachments/assets/aa0c3005-af4c-4f2e-bf4c-df6681050ad6"
   alt="main-togo-screen-shot"
   width="738">
+  
 </p>
 
 As you type, Togo searches through your tasks and filters the results.
@@ -214,6 +208,12 @@ togo toggle me[TAB]
 ```
 
 Shell will show only tasks containing "me" - perfect for quick selection.
+
+> [!TIP]
+> This really speeds task managment up since the `fuzz` is supported by the completion script.
+> e.g.take "Auto ***snapshot*** /boot parallel to btrfs snaps" as task that needs to be set as done,
+> Just running `togo toggle snap` would toggle it! and if `snap` matches more than one task,
+> you'd be prompted to select from matches.
 
 ### Available Commands
 
