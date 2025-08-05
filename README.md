@@ -31,8 +31,8 @@
 
 <summary><strong>Table of Contents 📜</strong></summary>
 
-- [Features ✨](#features-)
-- [Installation 📥](#installation-)
+- [Features](#features-)
+- [Installation](#installation-)
   - [ArchLinux](#archlinux)
   - [pre-built binaries (recommended)](#pre-built-binaries-recommended)
   - [Linux and Mac (x86_64):](#linux-and-mac-x86_64)
@@ -46,20 +46,16 @@
       - [b) Interactive selection list](#b-interactive-selection-list)
       - [c) Shell completion integration](#c-shell-completion-integration)
   - [Available Commands](#available-commands)
-  - [Additional Options 📌](#additional-options-)
-- [Features In Depth 🧠](#features-in-depth-)
+  - [Additional Options](#additional-options-)
+- [Features In Depth](#features-in-depth-)
   - [Shell Completion](#shell-completion)
   - [Data Storage](#data-storage)
 
 ---
 
-<p align="center">
-<img src="https://github.com/user-attachments/assets/14aa2924-e310-4c46-a7e2-9af9effe89f0"
-  alt="main-togo-screen-shot"
-  width="738">
-</p>
 
-## Features ✨
+
+## Features
 
 - **Zero-friction capture**: Add ideas directly from your terminal without interrupting your flow
 - **Beautiful terminal UI**: Interactive interface for managing todos when you're ready to organize
@@ -69,7 +65,7 @@
 - **Search/filtering**: Find tasks quickly in lists or through partial start-matching
 - **Shell integration**: Tab completion for workflow integration
 
-## Installation 📥
+## Installation
 
 ### ArchLinux
 
@@ -228,7 +224,7 @@ Shell will show only tasks containing "me" - perfect for quick selection.
 - `togo delete [task]` - Remove a task permanently
 - `togo list [flags]` - View tasks (--all, --archived)
 
-### Additional Options 📌
+### Additional Options
 
 Every command supports `-h` or `--help` flags to display detailed usage information:
 
@@ -237,7 +233,7 @@ togo toggle --help
 togo add -h
 ```
 
-## Features In Depth 🧠
+## Features In Depth
 
 ### Shell Completion
 
