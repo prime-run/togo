@@ -21,7 +21,8 @@
 <div align="center">
 
 <p align="center">  
-<img src="https://github.com/user-attachments/assets/20743925-cc5e-4695-afee-8dba4467718b"
+
+<img src="https://github.com/user-attachments/assets/7c013d6a-4c3e-48a2-88f0-6ed65bc61ff5"
   alt="main-togo-screen-shot"
   width="633" height="353">
 </p>
