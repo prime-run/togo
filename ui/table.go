@@ -190,3 +190,8 @@ func (m TodoTableModel) Init() tea.Cmd {
 func (m *TodoTableModel) SetStatusMessage(message string) {
 	m.statusMessage = message
 }
+
+// SetSourceLabel sets the data source label (e.g., "project" or "global")
+func (m *TodoTableModel) SetSourceLabel(label string) {
+	m.sourceLabel = label
+}
