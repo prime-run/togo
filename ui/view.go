@@ -70,7 +70,12 @@ func (m TodoTableModel) View() string {
 		listTitle = "Active Tasks"
 	}
 
-	leftSide := titleBarStyle.Render(listTitle)
+    // Include current data source label in the title bar
+    sourceText := ""
+    if m.sourceLabel != "" {
+        sourceText = "  |  source: " + m.sourceLabel
+    }
+    leftSide := titleBarStyle.Render(listTitle + sourceText)
 	rightSide := successMessageStyle.Render(m.statusMessage)
 
 	statusBar := lipgloss.JoinHorizontal(

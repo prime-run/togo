@@ -25,6 +25,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		tableModel := ui.NewTodoTable(todoList)
+		tableModel.SetSourceLabel(sourceFlag)
 		_, err := tea.NewProgram(tableModel, tea.WithAltScreen()).Run()
 		handleErrorAndExit(err, "Error running program:")
 

@@ -24,8 +24,10 @@ You can use:
 
 		archivedFlag, _ := cmd.Flags().GetBool("archived")
 		allFlag, _ := cmd.Flags().GetBool("all")
+		sourceFlag, _ := cmd.Flags().GetString("source")
 
 		m := ui.NewTodoTable(todoList)
+		m.SetSourceLabel(sourceFlag)
 
 		if archivedFlag {
 			m.SetShowArchivedOnly(true)
