@@ -116,6 +116,10 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
 			switch msg.String() {
+			case ".":
+				m.showHelp = !m.showHelp
+				m.updateRows()
+				return m, nil
 			case "esc", "q":
 				return m, tea.Quit
 			case "enter":
