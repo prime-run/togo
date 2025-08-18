@@ -26,7 +26,6 @@ var initCmd = &cobra.Command{
 			return
 		}
 
-		// Create an empty TodoList and write it as JSON into .togo
 		tlist := model.NewTodoList()
 		data, err := json.Marshal(tlist)
 		if err != nil {
