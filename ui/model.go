@@ -33,4 +33,5 @@ type TodoTableModel struct {
 	showAll          bool
 	showArchivedOnly bool
 	statusMessage    string
+	showHelp         bool
 }

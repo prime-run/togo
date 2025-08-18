@@ -70,6 +70,7 @@ func NewTodoTable(todoList *model.TodoList) TodoTableModel {
 		showAll:          true,
 		showArchivedOnly: false,
 		statusMessage:    "",
+		showHelp:         true,
 	}
 	m.updateRows()
 	return m
@@ -146,6 +147,27 @@ func (m *TodoTableModel) updateRows() {
 	m.table.SetRows(rows)
 
 	baseStyle.Width(availableWidth)
+
+	extra := 4
+	helpLines := 0
+	if m.mode == ModeNormal {
+		if m.showHelp {
+			helpLines = 2
+			if m.bulkActionActive {
+				helpLines += 9
+			} else {
+				helpLines += 8
+			}
+		} else {
+			helpLines = 1
+		}
+	}
+
+	rowsHeight := m.height - extra - helpLines
+	if rowsHeight < 3 {
+		rowsHeight = 3
+	}
+	m.table.SetHeight(rowsHeight)
 }
 
 func (m TodoTableModel) findTodoByID(id int) *model.Todo {

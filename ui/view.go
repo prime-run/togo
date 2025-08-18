@@ -92,7 +92,8 @@ func (m TodoTableModel) View() string {
 			"\n→ space: toggle selection" +
 			"\n→ enter: view details" +
 			"\n→ a: add new task" +
-			"\n→ q: quit"
+			"\n→ q: quit" +
+			"\n→ .: toggle help"
 	} else {
 		helpText = "\n" + statusBar + "\n" +
 			"→ t: toggle completion" +
@@ -101,11 +102,18 @@ func (m TodoTableModel) View() string {
 			"\n→ space: select" +
 			"\n→ enter: view details" +
 			"\n→ a: add new task" +
-			"\n→ q: quit"
+			"\n→ q: quit" +
+			"\n→ .: toggle help"
 	}
 
-	help := helpStyle.Render(helpText)
-
 	tableView := tableContainerStyle.Render(m.table.View())
-	return tableView + help
+	if m.mode == ModeNormal {
+		if m.showHelp {
+			help := helpStyle.Render(helpText)
+			return tableView + help
+		}
+		hint := helpStyle.Render("\n→ .: toggle help")
+		return tableView + hint
+	}
+	return tableView
 }
