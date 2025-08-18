@@ -16,6 +16,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width
 		m.height = msg.Height
 		m.updateRows()
+		return m, nil
 	}
 	switch m.mode {
 	case ModeViewDetail:
@@ -83,7 +84,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 				m.updateRows()
 				m.mode = ModeNormal
-				return m, nil
+				return m, m.forceRelayoutCmd()
 			case "n", "N", "esc", "q":
 				m.mode = ModeNormal
 				return m, nil
@@ -103,7 +104,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.SetStatusMessage("New task added")
 				}
 				m.mode = ModeNormal
-				return m, nil
+				return m, m.forceRelayoutCmd()
 			case "esc":
 				m.textInput.Reset()
 				m.mode = ModeNormal
@@ -119,7 +120,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case ".":
 				m.showHelp = !m.showHelp
 				m.updateRows()
-				return m, nil
+				return m, m.forceRelayoutCmd()
 			case "esc", "q":
 				return m, tea.Quit
 			case "enter":
@@ -172,6 +173,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						}
 					}
 					m.updateRows()
+					return m, m.forceRelayoutCmd()
 				}
 			case "n":
 				if len(m.table.Rows()) > 0 {
@@ -193,6 +195,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 							m.SetStatusMessage(fmt.Sprintf("%d tasks updated", count))
 						}
 						m.updateRows()
+						return m, m.forceRelayoutCmd()
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
 						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
@@ -256,6 +259,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 							}
 							m.bulkActionActive = len(m.selectedTodoIDs) > 0
 							m.updateRows()
+							return m, m.forceRelayoutCmd()
 						}
 					}
 					return m, nil
@@ -265,4 +269,11 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 	m.table, cmd = m.table.Update(msg)
 	return m, cmd
+}
+
+func (m TodoTableModel) forceRelayoutCmd() tea.Cmd {
+	width, height := m.width, m.height
+	return func() tea.Msg {
+		return tea.WindowSizeMsg{Width: width, Height: height}
+	}
 }
