@@ -7,7 +7,7 @@ import (
 )
 
 func loadTodoListOrExit() *model.TodoList {
-	todoList, err := model.LoadTodoList(TodoFileName)
+	todoList, err := model.LoadTodoListWithSource(TodoFileName, sourceFlag)
 	if err != nil {
 		fmt.Println("Error loading todos:", err)
 		os.Exit(1)
@@ -16,7 +16,7 @@ func loadTodoListOrExit() *model.TodoList {
 }
 
 func saveTodoListOrExit(todoList *model.TodoList) {
-	if err := todoList.Save(TodoFileName); err != nil {
+	if err := todoList.SaveWithSource(TodoFileName, sourceFlag); err != nil {
 		fmt.Println("Error saving todos:", err)
 		os.Exit(1)
 	}
