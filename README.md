@@ -40,6 +40,7 @@ togo is a command line task/todo management utility designed to be simple, fast,
 - **Vim Keybinds**: A handful of Vim actions are built into the TUI (more will be added soon).
 - **Fuzzy Search & Filtering**: Find tasks quickly with partial name matching.
 - **Tab Completion**: Shell completion with fuzzy matching support built into the completion script.
+- **Project/Global Sources**: Load/save from the closest `.togo` file in your project tree, with a global fallback. Force with `--source project|global`.
 
 ## Installation
 
@@ -107,6 +108,32 @@ togo add "Task description"
 togo add Call the client about project scope
 ```
 
+### Storage: project vs global (new)
+
+Togo can load and save your tasks from two sources:
+
+- "project" (default): uses the closest `.togo` file found by walking up from the current directory. If none is found, it falls back to the global file.
+- "global": always uses the global file in your user config directory.
+
+Control the source with the persistent flag on any command:
+
+```bash
+# project (default)
+togo list
+togo add "Write docs" -s project
+
+# force global
+togo list --source global
+```
+
+Initialize project-local storage in your repo:
+
+```bash
+togo init   # creates ./\.togo with an empty JSON list
+```
+
+In the TUI, the header shows the active source as `source: project` or `source: global`.
+
 ### Managing Your Tasks
 
 Togo provides two primary modes of operation:
@@ -127,10 +154,14 @@ togo list --archived # Archived todos only
 
 Togo offers flexible command syntax with three usage patterns:
 
+> All commands accept the persistent `--source|-s` flag: `project` (default) or `global`.
+
 ##### a) Direct selection by partial name
 
 ```bash
 togo toggle meeting
+# force using global source
+togo toggle meeting --source global
 ```
 
 If only one task contains "meeting," it executes immediately—no selection needed. If multiple tasks match (e.g., "team meeting" and "client meeting"), Togo automatically opens the selection list so you can choose the one you meant.
@@ -139,6 +170,8 @@ If only one task contains "meeting," it executes immediately—no selection need
 
 ```bash
 togo toggle
+# against project-local source explicitly
+togo toggle -s project
 ```
 
 Opens a selection list where you can choose from available tasks:
@@ -168,6 +201,8 @@ togo toggle me[TAB]
 
 The shell will show only tasks containing "me"—perfect for quick selection.
 
+`--source` also supports completion to `project` and `global`.
+
 > [!TIP]
 > This really speeds up task management since fuzzy matching is supported by the completion script.
 > For example, to mark the task `Auto ***snapshot*** /boot ...` as `completed`,
@@ -182,6 +217,11 @@ The shell will show only tasks containing "me"—perfect for quick selection.
 - `togo unarchive [task]` - Restore an archived task
 - `togo delete [task]` - Remove a task permanently
 - `togo list [flags]` - View tasks (`--all`, `--archived`)
+- `togo init` - Create an empty `.togo` file in the current directory (enable project-local storage)
+
+Notes:
+
+- All commands accept `--source|-s {project|global}` to control where tasks are read/written.
 
 ### Features in Depth
 
@@ -223,7 +263,10 @@ mkdir -p ~/.config/fish/completions
 togo completion fish > ~/.config/fish/completions/togo.fish
 ```
 
-> All the tasks are stored in a JSON file at `~/.togo/todos.json`.
+> Storage locations:
+>
+> - Project: nearest `./.togo` file (JSON).
+> - Global: `$XDG_CONFIG_HOME/togo/todos.json` (or `$HOME/.config/togo/todos.json`).
 
 ## Built With 🔧
 
