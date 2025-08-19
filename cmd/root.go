@@ -25,11 +25,15 @@ var rootCmd = &cobra.Command{
 		}
 
 		tableModel := ui.NewTodoTable(todoList)
-		tableModel.SetSourceLabel(sourceFlag)
+		tableModel.SetSource(sourceFlag, TodoFileName)
 		_, err := tea.NewProgram(tableModel, tea.WithAltScreen()).Run()
 		handleErrorAndExit(err, "Error running program:")
 
-		saveTodoListOrExit(todoList)
+		finalSource := tableModel.GetSourceLabel()
+		finalList := tableModel.GetTodoList()
+		if err := finalList.SaveWithSource(TodoFileName, finalSource); err != nil {
+			handleErrorAndExit(err, "Error saving todos:")
+		}
 	},
 }
 
