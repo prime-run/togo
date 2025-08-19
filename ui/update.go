@@ -117,6 +117,40 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
 			switch msg.String() {
+			case "s":
+				// Switch source between project and global
+				current := strings.ToLower(strings.TrimSpace(m.sourceLabel))
+				if current == "" {
+					current = "project"
+				}
+				// Save current state to current source before switching
+				if m.todoFileName != "" {
+					if err := m.todoList.SaveWithSource(m.todoFileName, current); err != nil {
+						m.SetStatusMessage("save failed: " + err.Error())
+					} else {
+						m.SetStatusMessage("Saved to " + current)
+					}
+				}
+				// Determine next source and load
+				next := "project"
+				if current == "project" {
+					next = "global"
+				}
+				if m.todoFileName != "" {
+					if newList, err := model.LoadTodoListWithSource(m.todoFileName, next); err == nil {
+						m.todoList = newList
+						m.sourceLabel = next
+						// reset selection state on source switch
+						m.selectedTodoIDs = make(map[int]bool)
+						m.bulkActionActive = false
+						m.updateRows()
+						m.SetStatusMessage("Source switched to " + next)
+						return m, m.forceRelayoutCmd()
+					} else {
+						m.SetStatusMessage("load failed for " + next)
+					}
+				}
+				return m, nil
 			case ".":
 				m.showHelp = !m.showHelp
 				m.updateRows()
@@ -257,7 +291,12 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 	}
+	prevCursor := m.table.Cursor()
 	m.table, cmd = m.table.Update(msg)
+	if m.table.Cursor() != prevCursor {
+		m.updateRows()
+		return m, tea.Batch(cmd, m.forceRelayoutCmd())
+	}
 	return m, cmd
 }
 

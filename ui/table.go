@@ -9,13 +9,13 @@ import (
 )
 
 const (
-	checkboxEmpty  = "[ ]"
-	checkboxFilled = "[×]"
+	checkboxEmpty  = "  "
+	checkboxFilled = " 󰄵 "
 )
 
 func NewTodoTable(todoList *model.TodoList) TodoTableModel {
 	displayWidth := 80
-	checkboxColWidth := 5
+	checkboxColWidth := 3
 	statusColWidth := 15
 	createdAtColWidth := 15
 	titleColWidth := displayWidth - checkboxColWidth - statusColWidth - createdAtColWidth - 8
@@ -33,13 +33,13 @@ func NewTodoTable(todoList *model.TodoList) TodoTableModel {
 	s := table.DefaultStyles()
 	s.Header = s.Header.
 		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("240")).
+		BorderForeground(lipgloss.Color("#003847")).
 		BorderBottom(true).
 		Bold(true).
 		Foreground(lipgloss.Color("252"))
 	s.Selected = s.Selected.
-		Foreground(lipgloss.Color("255")).
-		Background(lipgloss.Color("236")).
+		Foreground(lipgloss.Color("#00D3EE")).
+		Background(lipgloss.Color("#003847")).
 		Bold(true)
 	t.SetStyles(s)
 	ti := textinput.New()
@@ -109,7 +109,7 @@ func (m *TodoTableModel) updateRows() {
 	}
 
 	m.table.SetColumns([]table.Column{
-		{Title: "✓", Width: checkboxColWidth},
+		{Title: "  ", Width: checkboxColWidth},
 		{Title: "Title", Width: titleColWidth},
 		{Title: "Status", Width: statusColWidth},
 		{Title: "Created", Width: createdAtColWidth},
@@ -126,20 +126,38 @@ func (m *TodoTableModel) updateRows() {
 		filteredTodos = m.todoList.GetActiveTodos()
 	}
 
-	for _, todo := range filteredTodos {
+	sel := m.table.Cursor()
+	for i, todo := range filteredTodos {
 		checkbox := checkboxEmpty
 		if m.selectedTodoIDs[todo.ID] {
 			checkbox = checkboxFilled
 		}
 		title := todo.Title
-		if todo.Archived {
-			title = archivedStyle.Render(title)
-		}
 		var status string
-		if todo.Completed {
-			status = statusCompleteStyle.Render("Completed")
+		if i == sel {
+			// Avoid inner styles on the selected row so the Selected style paints the full background
+			if todo.Completed {
+				status = "Completed"
+			} else {
+				status = "Pending"
+			}
 		} else {
-			status = statusPendingStyle.Render("Pending")
+			if todo.Archived {
+				title = archivedStyle.Render(title)
+			} else {
+				// Zebra striping for non-archived titles inspired by the example
+				if i%2 == 0 {
+					title = lipgloss.NewStyle().Foreground(lipgloss.Color("245")).Render(title)
+				} else {
+					title = lipgloss.NewStyle().Foreground(lipgloss.Color("252")).Render(title)
+				}
+			}
+			// Colored status for non-selected rows
+			if todo.Completed {
+				status = statusCompleteStyle.Render("Completed")
+			} else {
+				status = statusPendingStyle.Render("Pending")
+			}
 		}
 		createdAt := model.FormatTimeAgo(todo.CreatedAt)
 		rows = append(rows, table.Row{checkbox, title, status, createdAt})
@@ -154,9 +172,11 @@ func (m *TodoTableModel) updateRows() {
 		if m.showHelp {
 			helpLines = 2 + 1
 			if m.bulkActionActive {
-				helpLines += 9
+				// Increased by 1 to include the new 's' shortcut line
+				helpLines += 10
 			} else {
-				helpLines += 8
+				// Increased by 1 to include the new 's' shortcut line
+				helpLines += 9
 			}
 		} else {
 			helpLines = 2

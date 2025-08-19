@@ -35,4 +35,21 @@ type TodoTableModel struct {
 	statusMessage    string
 	showHelp         bool
 	sourceLabel      string
+	todoFileName     string
+}
+
+// GetSourceLabel returns the current source label ("project" or "global").
+func (m TodoTableModel) GetSourceLabel() string {
+    return m.sourceLabel
+}
+
+// GetTodoList returns the underlying TodoList pointer.
+func (m TodoTableModel) GetTodoList() *model.TodoList {
+    return m.todoList
+}
+
+// SetSource sets the current source label and the todo filename used for load/save.
+func (m *TodoTableModel) SetSource(label, filename string) {
+    m.sourceLabel = label
+    m.todoFileName = filename
 }
