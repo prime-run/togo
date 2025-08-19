@@ -143,13 +143,8 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						for id := range m.selectedTodoIDs {
 							todo := m.findTodoByID(id)
 							if todo != nil {
-								if todo.Archived {
-									m.todoList.Unarchive(id)
-									count++
-								} else {
-									m.todoList.Toggle(id)
-									count++
-								}
+								m.todoList.Toggle(id)
+								count++
 							}
 						}
 						if count > 0 {
@@ -161,13 +156,8 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 						for _, todo := range m.todoList.Todos {
 							if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
-								if todo.Archived {
-									m.todoList.Unarchive(todo.ID)
-									m.SetStatusMessage("Task unarchived")
-								} else {
-									m.todoList.Toggle(todo.ID)
-									m.SetStatusMessage("Task updated")
-								}
+								m.todoList.Toggle(todo.ID)
+								m.SetStatusMessage("Task updated")
 								break
 							}
 						}
