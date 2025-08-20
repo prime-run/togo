@@ -152,14 +152,14 @@ func (m *TodoTableModel) updateRows() {
 	helpLines := 0
 	if m.mode == ModeNormal {
 		if m.showHelp {
-			helpLines = 2
+			helpLines = 2 + 1
 			if m.bulkActionActive {
 				helpLines += 9
 			} else {
 				helpLines += 8
 			}
 		} else {
-			helpLines = 1
+			helpLines = 2
 		}
 	}
 
@@ -189,4 +189,8 @@ func (m TodoTableModel) Init() tea.Cmd {
 
 func (m *TodoTableModel) SetStatusMessage(message string) {
 	m.statusMessage = message
+}
+
+func (m *TodoTableModel) SetSourceLabel(label string) {
+	m.sourceLabel = label
 }

@@ -17,6 +17,49 @@ type Todo struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+func (tl *TodoList) SaveWithSource(filename, source string) error {
+	filePath, err := getTodoFilePathWithSource(filename, source)
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
+		return err
+	}
+	data, err := json.Marshal(tl)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filePath, data, 0644)
+}
+
+func LoadTodoListWithSource(filename, source string) (*TodoList, error) {
+	filePath, err := getTodoFilePathWithSource(filename, source)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		return NewTodoList(), nil
+	}
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+	var tl TodoList
+	if err := json.Unmarshal(data, &tl); err != nil {
+		return nil, err
+	}
+	for i, todo := range tl.Todos {
+		if todo.CreatedAt.IsZero() {
+			tl.Todos[i].CreatedAt = time.Now()
+		}
+	}
+	tl.TodoByID = make(map[int]int)
+	for i, todo := range tl.Todos {
+		tl.TodoByID[todo.ID] = i
+	}
+	return &tl, nil
+}
+
 type TodoList struct {
 	Todos    []Todo      `json:"todos"`
 	NextID   int         `json:"next_id"`
@@ -117,26 +160,25 @@ func (tl *TodoList) Delete(id int) bool {
 }
 
 func (tl *TodoList) Save(filename string) error {
-	dataDir, err := getDataDir()
+	filePath, err := getTodoFilePath(filename)
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll(dataDir, 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
 		return err
 	}
 	data, err := json.Marshal(tl)
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(filepath.Join(dataDir, filename), data, 0644)
+	return os.WriteFile(filePath, data, 0644)
 }
 
 func LoadTodoList(filename string) (*TodoList, error) {
-	dataDir, err := getDataDir()
+	filePath, err := getTodoFilePath(filename)
 	if err != nil {
 		return nil, err
 	}
-	filePath := filepath.Join(dataDir, filename)
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		return NewTodoList(), nil
 	}
@@ -161,12 +203,66 @@ func LoadTodoList(filename string) (*TodoList, error) {
 }
 
 func getDataDir() (string, error) {
-	cacheDir, err := os.UserCacheDir()
+	cacheDir, err := os.UserConfigDir()
 	if err != nil {
 		return "", fmt.Errorf("could not determine user home directory: %w", err)
 	}
 	dataDir := filepath.Join(cacheDir, "togo")
 	return dataDir, nil
+}
+
+func getTodoFilePath(filename string) (string, error) {
+	if togoPath, ok := findClosestTogoFile(); ok {
+		return togoPath, nil
+	}
+	dataDir, err := getDataDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dataDir, filename), nil
+}
+
+func getTodoFilePathWithSource(filename, source string) (string, error) {
+	s := strings.ToLower(strings.TrimSpace(source))
+	switch s {
+	case "global":
+		dataDir, err := getDataDir()
+		if err != nil {
+			return "", err
+		}
+		return filepath.Join(dataDir, filename), nil
+	case "project", "":
+		if togoPath, ok := findClosestTogoFile(); ok {
+			return togoPath, nil
+		}
+		fallthrough
+	default:
+		dataDir, err := getDataDir()
+		if err != nil {
+			return "", err
+		}
+		return filepath.Join(dataDir, filename), nil
+	}
+}
+
+func findClosestTogoFile() (string, bool) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", false
+	}
+	dir := cwd
+	for {
+		candidate := filepath.Join(dir, ".togo")
+		if st, err := os.Stat(candidate); err == nil && !st.IsDir() {
+			return candidate, true
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
+	}
+	return "", false
 }
 
 func (tl *TodoList) GetTodoByID(id int) *Todo {
