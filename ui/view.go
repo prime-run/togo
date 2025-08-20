@@ -90,24 +90,26 @@ func (m TodoTableModel) View() string {
 	if m.bulkActionActive {
 		helpText = "\n" + statusBar + "\n" +
 			"Bulk Mode:" +
-			"\n→ t: toggle completion for all selected" +
-			"\n→ n: toggle archive/unarchive for selected" +
-			"\n→ d: delete selected" +
-			"\n→ space: toggle selection" +
-			"\n→ enter: view details" +
-			"\n→ a: add new task" +
-			"\n→ q: quit" +
-			"\n→ .: toggle help"
+			"\n→ " + confirmBtnStyle.Render("t") + ": toggle completion for all selected" +
+			"\n→ " + confirmBtnStyle.Render("n") + ": toggle archive/unarchive for selected" +
+			"\n→ " + confirmBtnStyle.Render("d") + ": delete selected" +
+			"\n→ " + confirmBtnStyle.Render("space") + ": toggle selection" +
+			"\n→ " + confirmBtnStyle.Render("enter") + ": view details" +
+			"\n→ " + confirmBtnStyle.Render("a") + ": add new task" +
+			"\n→ " + confirmBtnStyle.Render("s") + ": switch source (project/global)" +
+			"\n→ " + confirmBtnStyle.Render("q") + ": quit" +
+			"\n→ " + confirmBtnStyle.Render(".") + ": toggle help"
 	} else {
 		helpText = "\n" + statusBar + "\n" +
-			"→ t: toggle completion" +
-			"\n→ n: toggle archive/unarchive" +
-			"\n→ d: delete" +
-			"\n→ space: select" +
-			"\n→ enter: view details" +
-			"\n→ a: add new task" +
-			"\n→ q: quit" +
-			"\n→ .: toggle help"
+			"→ " + confirmBtnStyle.Render("t") + ": toggle completion" +
+			"\n→ " + confirmBtnStyle.Render("n") + ": toggle archive/unarchive" +
+			"\n→ " + confirmBtnStyle.Render("d") + ": delete" +
+			"\n→ " + confirmBtnStyle.Render("space") + ": select" +
+			"\n→ " + confirmBtnStyle.Render("enter") + ": view details" +
+			"\n→ " + confirmBtnStyle.Render("a") + ": add new task" +
+			"\n→ " + confirmBtnStyle.Render("s") + ": switch source (project/global)" +
+			"\n→ " + confirmBtnStyle.Render("q") + ": quit" +
+			"\n→ " + confirmBtnStyle.Render(".") + ": toggle help"
 	}
 
 	tableView := tableContainerStyle.Render(m.table.View())
@@ -116,7 +118,7 @@ func (m TodoTableModel) View() string {
 			help := helpStyle.Render(helpText)
 			return tableView + help
 		}
-		hint := helpStyle.Render("\n→ .: toggle help")
+		hint := helpStyle.Render("\n→ " + confirmBtnStyle.Render(".") + ": toggle help")
 		return tableView + hint
 	}
 	return tableView
