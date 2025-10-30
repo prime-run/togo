@@ -16,7 +16,7 @@ builds:
       - arm64
       - "386"
     main: ./main.go
-    binary: "togo-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    binary: "togo-{{ .Os }}-{{ .Arch }}"
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
     ignore:
