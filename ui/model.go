@@ -49,7 +49,7 @@ func (m TodoTableModel) GetTodoList() *model.TodoList {
 func (m *TodoTableModel) SetSource(label, filename string) {
 	m.sourceLabel = label
 	m.todoFileName = filename
-	
+
 	if label == "project" {
 		if projectName, hasProject := model.GetProjectRootName(); hasProject {
 			m.projectName = projectName
