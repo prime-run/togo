@@ -30,7 +30,7 @@ import (
 
 func main() {
 	if dir, err := os.Getwd(); err == nil {
-		os.Chdir(dir)
+		_ = os.Chdir(dir)
 	}
 	if err := cmd.Execute(); err != nil {
 		fmt.Println("Error:", err)

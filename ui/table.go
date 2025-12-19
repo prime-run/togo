@@ -194,15 +194,6 @@ func (m TodoTableModel) findTodoByID(id int) *model.Todo {
 	return m.todoList.GetTodoByID(id)
 }
 
-func (m TodoTableModel) findTodoByTitle(title string) *model.Todo {
-	for i, todo := range m.todoList.Todos {
-		if todo.Title == title {
-			return &m.todoList.Todos[i]
-		}
-	}
-	return nil
-}
-
 func (m TodoTableModel) Init() tea.Cmd {
 	return textinput.Blink
 }
