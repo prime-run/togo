@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/manifoldco/promptui"
-	"github.com/prime-run/togo/model"
-	"github.com/spf13/cobra"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/manifoldco/promptui"
+	"github.com/prime-run/togo/model"
+	"github.com/spf13/cobra"
 )
 
 var toggleCmd = &cobra.Command{
