@@ -73,6 +73,9 @@ func (m TodoTableModel) View() string {
 	sourceText := ""
 	if m.sourceLabel != "" {
 		sourceText = "  |  source: " + m.sourceLabel
+		if m.sourceLabel == "project" && m.projectName != "" {
+			sourceText += " (" + m.projectName + ")"
+		}
 	}
 	leftSide := titleBarStyle.Render(listTitle + sourceText)
 	rightSide := successMessageStyle.Render(m.statusMessage)

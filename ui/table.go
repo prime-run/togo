@@ -135,7 +135,7 @@ func (m *TodoTableModel) updateRows() {
 		title := todo.Title
 		var status string
 		if i == sel {
-			// Avoid inner styles on the selected row so the Selected style paints the full background
+
 			if todo.Completed {
 				status = "Completed"
 			} else {
@@ -145,14 +145,14 @@ func (m *TodoTableModel) updateRows() {
 			if todo.Archived {
 				title = archivedStyle.Render(title)
 			} else {
-				// Zebra striping for non-archived titles inspired by the example
+
 				if i%2 == 0 {
 					title = lipgloss.NewStyle().Foreground(lipgloss.Color("245")).Render(title)
 				} else {
 					title = lipgloss.NewStyle().Foreground(lipgloss.Color("252")).Render(title)
 				}
 			}
-			// Colored status for non-selected rows
+
 			if todo.Completed {
 				status = statusCompleteStyle.Render("Completed")
 			} else {
@@ -172,10 +172,10 @@ func (m *TodoTableModel) updateRows() {
 		if m.showHelp {
 			helpLines = 2 + 1
 			if m.bulkActionActive {
-				// Increased by 1 to include the new 's' shortcut line
+
 				helpLines += 10
 			} else {
-				// Increased by 1 to include the new 's' shortcut line
+
 				helpLines += 9
 			}
 		} else {
