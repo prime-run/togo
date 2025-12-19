@@ -14,7 +14,7 @@ func (m TodoTableModel) View() string {
 			return fullScreenStyle.Width(m.width).Height(m.height).Render(
 				fullTaskViewStyle.Render("Task not found."))
 		}
-		status := "Pending"
+		var status string
 		if todo.Completed {
 			status = statusCompleteStyle.Render("Completed")
 		} else {

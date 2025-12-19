@@ -265,6 +265,26 @@ func findClosestTogoFile() (string, bool) {
 	return "", false
 }
 
+func GetProjectRootName() (string, bool) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", false
+	}
+	dir := cwd
+	for {
+		candidate := filepath.Join(dir, ".togo")
+		if st, err := os.Stat(candidate); err == nil && !st.IsDir() {
+			return filepath.Base(dir), true
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
+	}
+	return "", false
+}
+
 func (tl *TodoList) GetTodoByID(id int) *Todo {
 	idx := tl.findIndexByID(id)
 	if idx == -1 {

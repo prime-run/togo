@@ -8,9 +8,14 @@ var (
 			BorderForeground(lipgloss.Color("#003847")).
 			Padding(0, 1).
 			Width(80)
-	titleStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("252")).
-			Bold(false)
+	fullScreenStyle = lipgloss.NewStyle().
+			Align(lipgloss.Center).
+			Padding(2)
+	fullTaskViewStyle = lipgloss.NewStyle().
+				BorderStyle(lipgloss.RoundedBorder()).
+				BorderForeground(lipgloss.Color("#003847")).
+				Padding(1, 2).
+				Width(60)
 	statusCompleteStyle = lipgloss.NewStyle().
 				Foreground(lipgloss.Color("28"))
 	statusPendingStyle = lipgloss.NewStyle().
@@ -37,25 +42,10 @@ var (
 			Foreground(lipgloss.Color("252")).
 			Background(lipgloss.Color("236")).
 			Padding(0, 1)
-	fullScreenStyle = lipgloss.NewStyle().
-			Align(lipgloss.Center).
-			Padding(2)
-	fullTaskViewStyle = lipgloss.NewStyle().
-				BorderStyle(lipgloss.RoundedBorder()).
-				BorderForeground(lipgloss.Color("#003847")).
-				Padding(1, 2).
-				Width(60)
 	taskTitleStyle = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.Color("252")).
 			MarginBottom(1)
-	taskContentStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("252")).
-				MarginBottom(1)
-	checkboxStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("252"))
-	selectedCheckboxStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("34"))
 	createdAtStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("246"))
 	archivedStyle = lipgloss.NewStyle().
@@ -72,15 +62,9 @@ var (
 	successMessageStyle = lipgloss.NewStyle().
 				Foreground(lipgloss.Color("125")).
 				Bold(true)
-	errorMessageStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("160")).
-				Bold(true)
 	titleBarStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("252")).
 			Bold(true)
-	statusBarContainerStyle = lipgloss.NewStyle().
-				Width(100).
-				Padding(0, 0)
 	tableContainerStyle = lipgloss.NewStyle().
 				BorderStyle(lipgloss.DoubleBorder()).
 				BorderForeground(lipgloss.Color("#003847")).

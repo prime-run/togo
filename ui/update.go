@@ -171,7 +171,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "enter":
 				if len(m.table.Rows()) > 0 {
 					selectedTitle := m.table.SelectedRow()[1]
-					cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+					cleanTitle := strings.ReplaceAll(selectedTitle, archivedStyle.Render(""), "")
 
 					for _, todo := range m.todoList.Todos {
 						if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
@@ -197,7 +197,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						}
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
-						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+						cleanTitle := strings.ReplaceAll(selectedTitle, archivedStyle.Render(""), "")
 
 						for _, todo := range m.todoList.Todos {
 							if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
@@ -233,7 +233,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						return m, m.forceRelayoutCmd()
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
-						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+						cleanTitle := strings.ReplaceAll(selectedTitle, archivedStyle.Render(""), "")
 
 						for _, todo := range m.todoList.Todos {
 							if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
@@ -263,7 +263,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						selectedRow := m.table.SelectedRow()
 						if len(selectedRow) > 1 {
 							selectedTitle := selectedRow[1]
-							cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+							cleanTitle := strings.ReplaceAll(selectedTitle, archivedStyle.Render(""), "")
 
 							m.mode = ModeDeleteConfirm
 							m.confirmAction = "delete"

@@ -19,7 +19,6 @@ const (
 type TodoTableModel struct {
 	todoList         *model.TodoList
 	table            table.Model
-	err              error
 	mode             Mode
 	confirmAction    string
 	actionTitle      string
