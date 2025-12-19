@@ -118,12 +118,12 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyMsg:
 			switch msg.String() {
 			case "s":
-				// Switch source between project and global
+
 				current := strings.ToLower(strings.TrimSpace(m.sourceLabel))
 				if current == "" {
 					current = "project"
 				}
-				// Save current state to current source before switching
+
 				if m.todoFileName != "" {
 					if err := m.todoList.SaveWithSource(m.todoFileName, current); err != nil {
 						m.SetStatusMessage("save failed: " + err.Error())
@@ -131,7 +131,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.SetStatusMessage("Saved to " + current)
 					}
 				}
-				// Determine next source and load
+
 				next := "project"
 				if current == "project" {
 					next = "global"
@@ -140,7 +140,18 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					if newList, err := model.LoadTodoListWithSource(m.todoFileName, next); err == nil {
 						m.todoList = newList
 						m.sourceLabel = next
-						// reset selection state on source switch
+						
+					
+						if next == "project" {
+							if projectName, hasProject := model.GetProjectRootName(); hasProject {
+								m.projectName = projectName
+							} else {
+								m.projectName = ""
+							}
+						} else {
+							m.projectName = ""
+						}
+
 						m.selectedTodoIDs = make(map[int]bool)
 						m.bulkActionActive = false
 						m.updateRows()
