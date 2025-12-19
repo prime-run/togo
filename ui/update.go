@@ -140,8 +140,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					if newList, err := model.LoadTodoListWithSource(m.todoFileName, next); err == nil {
 						m.todoList = newList
 						m.sourceLabel = next
-						
-					
+
 						if next == "project" {
 							if projectName, hasProject := model.GetProjectRootName(); hasProject {
 								m.projectName = projectName
