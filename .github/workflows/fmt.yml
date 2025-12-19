@@ -27,3 +27,15 @@ jobs:
             echo "Please run 'gofmt -s -w .' to fix formatting issues."
             exit 1
           fi
+
+      - name: Check goimports
+        run: |
+          go install golang.org/x/tools/cmd/goimports@latest
+          if [ "$(goimports -l . | wc -l)" -gt 0 ]; then
+            echo "The following files have import issues:"
+            goimports -l .
+            echo ""
+            echo "To fix these import issues, run:"
+            echo "goimports -w ."
+            exit 1
+          fi

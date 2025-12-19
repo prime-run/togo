@@ -1,4 +1,4 @@
-.PHONY: build install clean
+.PHONY: build install clean fmt format
 
 BINARY_NAME := togo
 BUILD_DIR := ./bin
@@ -174,6 +174,15 @@ install: build
 clean:
 	@echo "Cleaning build directory..."
 	@rm -rf $(BUILD_DIR)
+
+fmt:
+	@echo "Fixing import issues with goimports..."
+	@go install golang.org/x/tools/cmd/goimports@latest
+	@goimports -w .
+	@echo "Fixing code formatting with gofmt..."
+	@gofmt -s -w .
+
+format: fmt
 
 .DEFAULT_GOAL := install
 
