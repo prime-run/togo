@@ -59,17 +59,17 @@ Download the latest pre-built binaries from the [Releases](https://github.com/pr
 **Linux (x86_64)**
 
 ```bash
-wget https://github.com/prime-run/togo/releases/download/v1.0.5/togo_1.0.5_linux_amd64.tar.gz
+wget https://github.com/prime-run/togo/releases/latest/download/togo_linux_amd64.tar.gz
 mkdir -p ~/.local/bin
-tar -xzf togo_*.tar.gz -C ~/.local/bin/togo
+tar -xzf togo*.tar.gz -C ~/.local/bin && mv ~/.local/bin/togo* ~/.local/bin/togo
 ```
 
 **macOS (Apple Silicon arm64)**
 
 ```bash
-wget https://github.com/prime-run/togo/releases/download/v1.0.5/togo_1.0.5_darwin_arm64.tar.gz
+wget https://github.com/prime-run/togo/releases/latest/download/togo_darwin_arm64.tar.gz
 mkdir -p ~/.local/bin
-tar -xzf togo_*.tar.gz -C ~/.local/bin/togo
+tar -xzf togo*.tar.gz -C ~/.local/bin && mv ~/.local/bin/togo* ~/.local/bin/togo
 ```
 
 > [!NOTE]
