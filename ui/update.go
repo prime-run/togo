@@ -118,12 +118,12 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyMsg:
 			switch msg.String() {
 			case "s":
-				// Switch source between project and global
+
 				current := strings.ToLower(strings.TrimSpace(m.sourceLabel))
 				if current == "" {
 					current = "project"
 				}
-				// Save current state to current source before switching
+
 				if m.todoFileName != "" {
 					if err := m.todoList.SaveWithSource(m.todoFileName, current); err != nil {
 						m.SetStatusMessage("save failed: " + err.Error())
@@ -131,7 +131,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.SetStatusMessage("Saved to " + current)
 					}
 				}
-				// Determine next source and load
+
 				next := "project"
 				if current == "project" {
 					next = "global"
@@ -140,7 +140,17 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					if newList, err := model.LoadTodoListWithSource(m.todoFileName, next); err == nil {
 						m.todoList = newList
 						m.sourceLabel = next
-						// reset selection state on source switch
+
+						if next == "project" {
+							if projectName, hasProject := model.GetProjectRootName(); hasProject {
+								m.projectName = projectName
+							} else {
+								m.projectName = ""
+							}
+						} else {
+							m.projectName = ""
+						}
+
 						m.selectedTodoIDs = make(map[int]bool)
 						m.bulkActionActive = false
 						m.updateRows()
@@ -160,7 +170,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "enter":
 				if len(m.table.Rows()) > 0 {
 					selectedTitle := m.table.SelectedRow()[1]
-					cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+					cleanTitle := strings.ReplaceAll(selectedTitle, archivedStyle.Render(""), "")
 
 					for _, todo := range m.todoList.Todos {
 						if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
@@ -186,7 +196,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						}
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
-						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+						cleanTitle := strings.ReplaceAll(selectedTitle, archivedStyle.Render(""), "")
 
 						for _, todo := range m.todoList.Todos {
 							if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
@@ -222,7 +232,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						return m, m.forceRelayoutCmd()
 					} else {
 						selectedTitle := m.table.SelectedRow()[1]
-						cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+						cleanTitle := strings.ReplaceAll(selectedTitle, archivedStyle.Render(""), "")
 
 						for _, todo := range m.todoList.Todos {
 							if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
@@ -252,7 +262,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						selectedRow := m.table.SelectedRow()
 						if len(selectedRow) > 1 {
 							selectedTitle := selectedRow[1]
-							cleanTitle := strings.Replace(selectedTitle, archivedStyle.Render(""), "", -1)
+							cleanTitle := strings.ReplaceAll(selectedTitle, archivedStyle.Render(""), "")
 
 							m.mode = ModeDeleteConfirm
 							m.confirmAction = "delete"

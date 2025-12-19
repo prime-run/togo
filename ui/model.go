@@ -19,7 +19,6 @@ const (
 type TodoTableModel struct {
 	todoList         *model.TodoList
 	table            table.Model
-	err              error
 	mode             Mode
 	confirmAction    string
 	actionTitle      string
@@ -36,20 +35,28 @@ type TodoTableModel struct {
 	showHelp         bool
 	sourceLabel      string
 	todoFileName     string
+	projectName      string
 }
 
-// GetSourceLabel returns the current source label ("project" or "global").
 func (m TodoTableModel) GetSourceLabel() string {
-    return m.sourceLabel
+	return m.sourceLabel
 }
 
-// GetTodoList returns the underlying TodoList pointer.
 func (m TodoTableModel) GetTodoList() *model.TodoList {
-    return m.todoList
+	return m.todoList
 }
 
-// SetSource sets the current source label and the todo filename used for load/save.
 func (m *TodoTableModel) SetSource(label, filename string) {
-    m.sourceLabel = label
-    m.todoFileName = filename
+	m.sourceLabel = label
+	m.todoFileName = filename
+
+	if label == "project" {
+		if projectName, hasProject := model.GetProjectRootName(); hasProject {
+			m.projectName = projectName
+		} else {
+			m.projectName = ""
+		}
+	} else {
+		m.projectName = ""
+	}
 }

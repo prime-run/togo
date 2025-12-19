@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/prime-run/togo/model"
 	"os"
+
+	"github.com/prime-run/togo/model"
 )
 
 func loadTodoListOrExit() *model.TodoList {
