@@ -270,6 +270,7 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						}
 					}
 				}
+				return m, nil
 			case " ":
 				if len(m.table.Rows()) > 0 {
 					selectedIndex := m.table.Cursor()
