@@ -187,6 +187,19 @@ func (m *TodoTableModel) updateRows() {
 	if rowsHeight < 3 {
 		rowsHeight = 3
 	}
+
+	if len(rows) > 0 {
+		cursor := m.table.Cursor()
+		if cursor < 0 {
+			cursor = 0
+		} else if cursor >= len(rows) {
+			cursor = len(rows) - 1
+		}
+		m.table.SetCursor(cursor)
+	} else {
+		m.table.SetCursor(0)
+	}
+
 	m.table.SetHeight(rowsHeight)
 }
 
