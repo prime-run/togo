@@ -233,7 +233,8 @@ func getTodoFilePathWithSource(filename, source string) (string, error) {
 		return filepath.Join(dataDir, filename), nil
 	case "project", "":
 		if togoPath, ok := findClosestTogoFile(); ok {
-			return togoPath, nil
+			projectDir := filepath.Dir(togoPath)
+			return filepath.Join(projectDir, filename), nil
 		}
 		fallthrough
 	default:
