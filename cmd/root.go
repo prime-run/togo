@@ -20,10 +20,6 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		todoList := loadTodoListOrExit()
 
-		if checkEmptyTodoList(todoList, "No todos found. Add some todos with 'add' command!") {
-			return
-		}
-
 		tableModel := ui.NewTodoTable(todoList)
 		tableModel.SetSource(sourceFlag, TodoFileName)
 		_, err := tea.NewProgram(tableModel, tea.WithAltScreen()).Run()
