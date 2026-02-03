@@ -10,7 +10,7 @@ togo is a command line task/todo management utility designed to be simple, fast,
 
 <div align="center">
 <p align="center">  
-<img src="https://github.com/user-attachments/assets/7c013d6a-4c3e-48a2-88f0-6ed65bc61ff5"
+  <img src="https://github.com/user-attachments/assets/ebc01ece-9a64-4812-b96c-f851dcad099b"
   alt="main-togo-screen-shot"
   width="633" height="353">
 </p>
@@ -40,7 +40,8 @@ togo is a command line task/todo management utility designed to be simple, fast,
 - **Vim Keybinds**: A handful of Vim actions are built into the TUI (more will be added soon).
 - **Fuzzy Search & Filtering**: Find tasks quickly with partial name matching.
 - **Tab Completion**: Shell completion with fuzzy matching support built into the completion script.
-- **Project/Global Sources**: Load/save from the closest `.togo` file in your project tree, with a global fallback. Force with `--source project|global`.
+- **Project/Global Sources**: Load/save from the closest `.togo` file in the project tree, with a global fallback. Force with `--source project|global`.
+
 
 ## Installation
 
@@ -55,22 +56,6 @@ paru -S togo-bin
 ### Pre-built Binaries (Recommended)
 
 Download the latest pre-built binaries from the [Releases](https://github.com/prime-run/togo/releases) page.
-
-**Linux (x86_64)**
-
-```bash
-wget https://github.com/prime-run/togo/releases/latest/download/togo_linux_amd64.tar.gz
-mkdir -p ~/.local/bin
-tar -xzf togo*.tar.gz -C ~/.local/bin && mv ~/.local/bin/togo* ~/.local/bin/togo
-```
-
-**macOS (Apple Silicon arm64)**
-
-```bash
-wget https://github.com/prime-run/togo/releases/latest/download/togo_darwin_arm64.tar.gz
-mkdir -p ~/.local/bin
-tar -xzf togo*.tar.gz -C ~/.local/bin && mv ~/.local/bin/togo* ~/.local/bin/togo
-```
 
 > [!NOTE]
 > Don't forget to set the `PATH` environment variable.
@@ -108,14 +93,14 @@ togo add "Task description"
 togo add Call the client about project scope
 ```
 
-### Storage: project vs global (new)
+### Storage: project vs global
 
-Togo can load and save your tasks from two sources:
+Togo tasks can be loaded/saved in 2 levels:
 
-- "project" (default): uses the closest `.togo` file found by walking up from the current directory. If none is found, it falls back to the global file.
-- "global": always uses the global file in your user config directory.
+- **project** (default): Uses a `todos.json` file in project directory. Togo searches upward through parent directories to find the nearest `todos.json` file, creating a hierarchical task structure. If no project file is found, it falls back to the global storage.
+- **global**: Reads `personal` task file under `~/.config/togo/todos.json`.
 
-Control the source with the persistent flag on any command:
+Control the storage location with the `--source` flag:
 
 ```bash
 # project (default)
@@ -126,21 +111,21 @@ togo add "Write docs" -s project
 togo list --source global
 ```
 
-Initialize project-local storage in your repo:
+Initialize project-local storage in current working directory:
 
 ```bash
-togo init   # creates ./\.togo with an empty JSON list
+togo init   # initializes todos.json file in the current directory (project level)
 ```
 
 In the TUI, the header shows the active source as `source: project` or `source: global`.
 
-### Managing Your Tasks
+### Managing Tasks
 
 Togo provides two primary modes of operation:
 
 #### 1. Interactive Mode (TUI)
 
-The TUI lets you work with your todos visually and allows for bulk actions:
+The TUI allows managing todos visually and allows for bulk actions:
 
 ```bash
 togo
@@ -183,7 +168,7 @@ Opens a selection list where you can choose from available tasks:
   
 </p>
 
-As you type, Togo searches through your tasks and filters the results.
+As you type, Togo searches through tasks and filters the results.
 
 ##### c) Shell completion integration
 
@@ -217,7 +202,7 @@ The shell will show only tasks containing "me"—perfect for quick selection.
 - `togo unarchive [task]` - Restore an archived task
 - `togo delete [task]` - Remove a task permanently
 - `togo list [flags]` - View tasks (`--all`, `--archived`)
-- `togo init` - Create an empty `.togo` file in the current directory (enable project-local storage)
+- `togo init` - Create an empty `todos.json` file in the current directory (enable project-local storage)
 
 Notes:
 
@@ -265,7 +250,7 @@ togo completion fish > ~/.config/fish/completions/togo.fish
 
 > Storage locations:
 >
-> - Project: nearest `./.togo` file (JSON).
+> - Project: nearest `./todos.json` file (JSON).
 > - Global: `$XDG_CONFIG_HOME/togo/todos.json` (or `$HOME/.config/togo/todos.json`).
 
 ## Built With 🔧
