@@ -102,6 +102,15 @@ func (tl *TodoList) findIndexByID(id int) int {
 	return -1
 }
 
+func (tl *TodoList) Edit(id int, newTitle string) bool {
+	idx := tl.findIndexByID(id)
+	if idx == -1 {
+		return false
+	}
+	tl.Todos[idx].Title = newTitle
+	return true
+}
+
 func (tl *TodoList) Toggle(id int) bool {
 	idx := tl.findIndexByID(id)
 	if idx == -1 {

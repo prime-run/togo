@@ -55,6 +55,13 @@ func (m TodoTableModel) View() string {
 				helpStyle.Render("Press Enter to save, Esc to cancel"))
 		return fullScreenStyle.Width(m.width).Height(m.height).Render(inputView)
 	}
+	if m.mode == ModeEditTask {
+		inputView := inputStyle.Render(
+			inputPromptStyle.Render("Edit Task") + "\n\n" +
+				m.textInput.View() + "\n\n" +
+				helpStyle.Render("Press Enter to save, Esc to cancel"))
+		return fullScreenStyle.Width(m.width).Height(m.height).Render(inputView)
+	}
 	if len(m.todoList.Todos) == 0 {
 		return baseStyle.Render("No tasks found. Press 'a' to add a new task!")
 	}
@@ -107,6 +114,7 @@ func (m TodoTableModel) View() string {
 			"→ " + confirmBtnStyle.Render("t") + ": toggle completion" +
 			"\n→ " + confirmBtnStyle.Render("n") + ": toggle archive/unarchive" +
 			"\n→ " + confirmBtnStyle.Render("d") + ": delete" +
+			"\n→ " + confirmBtnStyle.Render("e") + ": edit task" +
 			"\n→ " + confirmBtnStyle.Render("space") + ": select" +
 			"\n→ " + confirmBtnStyle.Render("enter") + ": view details" +
 			"\n→ " + confirmBtnStyle.Render("a") + ": add new task" +
