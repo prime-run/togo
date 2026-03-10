@@ -14,6 +14,7 @@ const (
 	ModeDeleteConfirm
 	ModeArchiveConfirm
 	ModeAddTask
+	ModeEditTask
 )
 
 type TodoTableModel struct {
@@ -23,6 +24,7 @@ type TodoTableModel struct {
 	confirmAction    string
 	actionTitle      string
 	viewTaskID       int
+	editTaskID       int
 	width            int
 	height           int
 	selectedTodoIDs  map[int]bool
