@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	checkboxEmpty  = "  "
-	checkboxFilled = " 󰄵 "
+	checkboxEmpty  = " \u2610 "
+	checkboxFilled = " \u2611 "
 )
 
 func NewTodoTable(todoList *model.TodoList) TodoTableModel {
@@ -20,7 +20,7 @@ func NewTodoTable(todoList *model.TodoList) TodoTableModel {
 	createdAtColWidth := 15
 	titleColWidth := displayWidth - checkboxColWidth - statusColWidth - createdAtColWidth - 8
 	columns := []table.Column{
-		{Title: "✓", Width: checkboxColWidth},
+		{Title: " \u2713 ", Width: checkboxColWidth},
 		{Title: "Title", Width: titleColWidth},
 		{Title: "Status", Width: statusColWidth},
 		{Title: "Created", Width: createdAtColWidth},
@@ -109,7 +109,7 @@ func (m *TodoTableModel) updateRows() {
 	}
 
 	m.table.SetColumns([]table.Column{
-		{Title: "  ", Width: checkboxColWidth},
+		{Title: " \u2610 ", Width: checkboxColWidth},
 		{Title: "Title", Width: titleColWidth},
 		{Title: "Status", Width: statusColWidth},
 		{Title: "Created", Width: createdAtColWidth},
@@ -129,7 +129,9 @@ func (m *TodoTableModel) updateRows() {
 	sel := m.table.Cursor()
 	for i, todo := range filteredTodos {
 		checkbox := checkboxEmpty
-		if m.selectedTodoIDs[todo.ID] {
+		if todo.Completed {
+    	checkbox = checkboxFilled
+		} else if m.selectedTodoIDs[todo.ID] {
 			checkbox = checkboxFilled
 		}
 		title := todo.Title
