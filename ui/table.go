@@ -130,7 +130,7 @@ func (m *TodoTableModel) updateRows() {
 	for i, todo := range filteredTodos {
 		checkbox := checkboxEmpty
 		if todo.Completed {
-    	checkbox = checkboxFilled
+			checkbox = checkboxFilled
 		} else if m.selectedTodoIDs[todo.ID] {
 			checkbox = checkboxFilled
 		}
