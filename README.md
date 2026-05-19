@@ -36,7 +36,7 @@ togo is a command line task/todo management utility designed to be simple, fast,
 
 ## Features
 
-- **CLI & TUI Interfaces**: A CLI for single-task operations and an interactive TUI for bulk operations and list view.
+- **CLI & TUI Interfaces**: A CLI for single-task operations and an interactive TUI for bulk operations and list view. TUI is fully compatible with system default fonts and does not require nerd fonts to be installed
 - **Vim Keybinds**: A handful of Vim actions are built into the TUI (more will be added soon).
 - **Fuzzy Search & Filtering**: Find tasks quickly with partial name matching.
 - **Tab Completion**: Shell completion with fuzzy matching support built into the completion script.
