@@ -113,6 +113,28 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.textInput, cmd = m.textInput.Update(msg)
 		return m, cmd
+	case ModeEditTask:
+		switch msg := msg.(type) {
+		case tea.KeyMsg:
+			switch msg.String() {
+			case "enter":
+				title := strings.TrimSpace(m.textInput.Value())
+				if title != "" {
+					m.todoList.Edit(m.editTaskID, title)
+					m.updateRows()
+					m.SetStatusMessage("Task updated")
+				}
+				m.textInput.Reset()
+				m.mode = ModeNormal
+				return m, m.forceRelayoutCmd()
+			case "esc":
+				m.textInput.Reset()
+				m.mode = ModeNormal
+				return m, nil
+			}
+		}
+		m.textInput, cmd = m.textInput.Update(msg)
+		return m, cmd
 	case ModeNormal:
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
@@ -249,6 +271,22 @@ func (m TodoTableModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						}
 					}
 				}
+			case "e":
+				if len(m.table.Rows()) > 0 {
+					selectedTitle := m.table.SelectedRow()[1]
+					cleanTitle := strings.ReplaceAll(selectedTitle, archivedStyle.Render(""), "")
+
+					for _, todo := range m.todoList.Todos {
+						if strings.Contains(selectedTitle, todo.Title) || todo.Title == cleanTitle {
+							m.editTaskID = todo.ID
+							m.textInput.SetValue(todo.Title)
+							m.textInput.Focus()
+							m.mode = ModeEditTask
+							return m, textinput.Blink
+						}
+					}
+				}
+				return m, nil
 			case "a":
 				m.mode = ModeAddTask
 				m.textInput.Focus()
