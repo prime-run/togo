@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/prime-run/togo/model"
+	"github.com/prime-run/togo/ui"
 )
 
 func loadTodoListOrExit() *model.TodoList {
@@ -18,6 +20,22 @@ func loadTodoListOrExit() *model.TodoList {
 
 func saveTodoListOrExit(todoList *model.TodoList) {
 	if err := todoList.SaveWithSource(TodoFileName, sourceFlag); err != nil {
+		fmt.Println("Error saving todos:", err)
+		os.Exit(1)
+	}
+}
+
+func saveTodoTableAfterTUIOrExit(finalModel tea.Model) {
+	m, ok := finalModel.(ui.TodoTableModel)
+	if !ok {
+		fmt.Println("Error saving todos: unexpected TUI model type")
+		os.Exit(1)
+	}
+	source := m.GetSourceLabel()
+	if source == "" {
+		source = sourceFlag
+	}
+	if err := m.GetTodoList().SaveWithSource(TodoFileName, source); err != nil {
 		fmt.Println("Error saving todos:", err)
 		os.Exit(1)
 	}
