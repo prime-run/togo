@@ -16,11 +16,7 @@ var toggleCmd = &cobra.Command{
 	Short: "Toggle todo completion status",
 	Long:  `Toggle the completion status of a todo. It marks a pending todo as completed and vice versa.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			fmt.Println("Error loading todos:", err)
-			os.Exit(1)
-		}
+		todoList := loadTodoListOrExit()
 		if len(todoList.Todos) == 0 {
 			fmt.Println("No todos found. Add some todos with the 'add' command.")
 			os.Exit(1)
@@ -39,10 +35,7 @@ var toggleCmd = &cobra.Command{
 						break
 					}
 				}
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" toggled successfully\n", todoTitle)
 				fmt.Printf("Status: %s\n", status)
 				return
@@ -58,10 +51,7 @@ var toggleCmd = &cobra.Command{
 						} else {
 							status = "Pending"
 						}
-						if err := todoList.Save(TodoFileName); err != nil {
-							fmt.Println("Error saving todos:", err)
-							os.Exit(1)
-						}
+						saveTodoListOrExit(todoList)
 						fmt.Printf("Todo \"%s\" toggled successfully\n", todo.Title)
 						fmt.Printf("Status: %s\n", status)
 						return
@@ -88,10 +78,7 @@ var toggleCmd = &cobra.Command{
 					status = "Pending"
 				}
 
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" toggled successfully\n", matches[0].Title)
 				fmt.Printf("Status: %s\n", status)
 				return
@@ -112,10 +99,7 @@ var toggleCmd = &cobra.Command{
 					status = "Pending"
 				}
 
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" toggled successfully\n", selectedTodo.Title)
 				fmt.Printf("Status: %s\n", status)
 
@@ -140,10 +124,7 @@ var toggleCmd = &cobra.Command{
 			} else {
 				status = "Pending"
 			}
-			if err := todoList.Save(TodoFileName); err != nil {
-				fmt.Println("Error saving todos:", err)
-				os.Exit(1)
-			}
+			saveTodoListOrExit(todoList)
 			fmt.Printf("Todo \"%s\" toggled successfully\n", selectedTodo.Title)
 			fmt.Printf("Status: %s\n", status)
 		}
@@ -152,10 +133,7 @@ var toggleCmd = &cobra.Command{
 		if len(args) != 0 {
 			return nil, cobra.ShellCompDirectiveNoFileComp
 		}
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			return nil, cobra.ShellCompDirectiveNoFileComp
-		}
+		todoList := loadTodoListOrExit()
 		titles := todoList.GetTodoTitles()
 		if toComplete != "" {
 			var filtered []string

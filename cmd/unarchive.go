@@ -16,12 +16,7 @@ var unarchiveCmd = &cobra.Command{
 	Short: "Unarchive a todo",
 	Long:  `Unarchive a todo from your archive using its title. This returns it to the active list.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		todoList, err := model.LoadTodoList(TodoFileName)
-
-		if err != nil {
-			fmt.Println("Error loading todos:", err)
-			os.Exit(1)
-		}
+		todoList := loadTodoListOrExit()
 
 		if len(todoList.GetArchivedTodos()) == 0 {
 			fmt.Println("No archived todos found.")
@@ -33,10 +28,7 @@ var unarchiveCmd = &cobra.Command{
 			todo, found := todoList.FindByTitle(todoTitle, false)
 			if found && todo.Archived {
 				todoList.Unarchive(todo.ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" unarchived successfully\n", todoTitle)
 				return
 			}
@@ -46,10 +38,7 @@ var unarchiveCmd = &cobra.Command{
 				for _, todo := range todoList.Todos {
 					if todo.ID == id && todo.Archived {
 						todoList.Unarchive(id)
-						if err := todoList.Save(TodoFileName); err != nil {
-							fmt.Println("Error saving todos:", err)
-							os.Exit(1)
-						}
+						saveTodoListOrExit(todoList)
 						fmt.Printf("Todo \"%s\" unarchived successfully\n", todo.Title)
 						return
 					}
@@ -66,10 +55,7 @@ var unarchiveCmd = &cobra.Command{
 				os.Exit(1)
 			} else if len(matches) == 1 {
 				todoList.Unarchive(matches[0].ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" unarchived successfully\n", matches[0].Title)
 				return
 			} else {
@@ -79,10 +65,7 @@ var unarchiveCmd = &cobra.Command{
 					os.Exit(0)
 				}
 				todoList.Unarchive(selectedTodo.ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" unarchived successfully\n", selectedTodo.Title)
 				return
 			}
@@ -103,10 +86,7 @@ var unarchiveCmd = &cobra.Command{
 
 			todoList.Unarchive(selectedTodo.ID)
 
-			if err := todoList.Save(TodoFileName); err != nil {
-				fmt.Println("Error saving todos:", err)
-				os.Exit(1)
-			}
+			saveTodoListOrExit(todoList)
 
 			fmt.Printf("Todo \"%s\" unarchived successfully\n", selectedTodo.Title)
 		}
@@ -116,10 +96,7 @@ var unarchiveCmd = &cobra.Command{
 		if len(args) != 0 {
 			return nil, cobra.ShellCompDirectiveNoFileComp
 		}
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			return nil, cobra.ShellCompDirectiveNoFileComp
-		}
+		todoList := loadTodoListOrExit()
 		_, archivedTitles := todoList.GetActiveAndArchivedTodoTitles()
 		if toComplete != "" {
 			var filtered []string
