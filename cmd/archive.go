@@ -16,11 +16,7 @@ var archiveCmd = &cobra.Command{
 	Short: "Archive a todo",
 	Long:  `Archive a todo from your list using its title. Archived todos are hidden from the main list.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			fmt.Println("Error loading todos:", err)
-			os.Exit(1)
-		}
+		todoList := loadTodoListOrExit()
 		if len(todoList.GetActiveTodos()) == 0 {
 			fmt.Println("No active todos found. Add some todos with the 'add' command.")
 			os.Exit(1)
@@ -30,10 +26,7 @@ var archiveCmd = &cobra.Command{
 			todo, found := todoList.FindByTitle(todoTitle, false)
 			if found && !todo.Archived {
 				todoList.Archive(todo.ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" archived successfully\n", todoTitle)
 				return
 			}
@@ -42,10 +35,7 @@ var archiveCmd = &cobra.Command{
 				for _, todo := range todoList.Todos {
 					if todo.ID == id && !todo.Archived {
 						todoList.Archive(id)
-						if err := todoList.Save(TodoFileName); err != nil {
-							fmt.Println("Error saving todos:", err)
-							os.Exit(1)
-						}
+						saveTodoListOrExit(todoList)
 						fmt.Printf("Todo \"%s\" archived successfully\n", todo.Title)
 						return
 					}
@@ -62,10 +52,7 @@ var archiveCmd = &cobra.Command{
 				os.Exit(1)
 			} else if len(matches) == 1 {
 				todoList.Archive(matches[0].ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" archived successfully\n", matches[0].Title)
 				return
 			} else {
@@ -75,10 +62,7 @@ var archiveCmd = &cobra.Command{
 					os.Exit(0)
 				}
 				todoList.Archive(selectedTodo.ID)
-				if err := todoList.Save(TodoFileName); err != nil {
-					fmt.Println("Error saving todos:", err)
-					os.Exit(1)
-				}
+				saveTodoListOrExit(todoList)
 				fmt.Printf("Todo \"%s\" archived successfully\n", selectedTodo.Title)
 				return
 			}
@@ -94,10 +78,7 @@ var archiveCmd = &cobra.Command{
 				os.Exit(0)
 			}
 			todoList.Archive(selectedTodo.ID)
-			if err := todoList.Save(TodoFileName); err != nil {
-				fmt.Println("Error saving todos:", err)
-				os.Exit(1)
-			}
+			saveTodoListOrExit(todoList)
 			fmt.Printf("Todo \"%s\" archived successfully\n", selectedTodo.Title)
 		}
 	},
@@ -105,10 +86,7 @@ var archiveCmd = &cobra.Command{
 		if len(args) != 0 {
 			return nil, cobra.ShellCompDirectiveNoFileComp
 		}
-		todoList, err := model.LoadTodoList(TodoFileName)
-		if err != nil {
-			return nil, cobra.ShellCompDirectiveNoFileComp
-		}
+		todoList := loadTodoListOrExit()
 		activeTitles, _ := todoList.GetActiveAndArchivedTodoTitles()
 		if toComplete != "" {
 			var filtered []string
