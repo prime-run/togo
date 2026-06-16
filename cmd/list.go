@@ -24,10 +24,10 @@ You can use:
 
 		archivedFlag, _ := cmd.Flags().GetBool("archived")
 		allFlag, _ := cmd.Flags().GetBool("all")
-		sourceFlag, _ := cmd.Flags().GetString("source")
+		listSource, _ := cmd.Flags().GetString("source")
 
 		m := ui.NewTodoTable(todoList)
-		m.SetSourceLabel(sourceFlag)
+		m.SetSource(listSource, TodoFileName)
 
 		if archivedFlag {
 			m.SetShowArchivedOnly(true)
@@ -37,9 +37,9 @@ You can use:
 			m.SetShowActiveOnly(true)
 		}
 
-		_, err := tea.NewProgram(m, tea.WithAltScreen()).Run()
+		finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run()
 		handleErrorAndExit(err, "Error running program:")
-		saveTodoListOrExit(todoList)
+		saveTodoTableAfterTUIOrExit(finalModel)
 	},
 }
 
