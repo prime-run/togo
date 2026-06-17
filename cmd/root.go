@@ -41,14 +41,9 @@ var rootCmd = &cobra.Command{
 		} else {
 			tableModel.SetSkipConfirmationsStatus("off")
 		}
-		_, err = tea.NewProgram(tableModel, tea.WithAltScreen()).Run()
+		finalModel, err := tea.NewProgram(tableModel, tea.WithAltScreen()).Run()
 		handleErrorAndExit(err, "Error running program:")
-
-		finalSource := tableModel.GetSourceLabel()
-		finalList := tableModel.GetTodoList()
-		if err := finalList.SaveWithSource(TodoFileName, finalSource); err != nil {
-			handleErrorAndExit(err, "Error saving todos:")
-		}
+		saveTodoTableAfterTUIOrExit(finalModel)
 	},
 }
 
