@@ -25,7 +25,7 @@ type TodoTableModel struct {
 	confirmAction              string
 	actionTitle                string
 	viewTaskID                 int
-	editTaskID       		   int
+	editTaskID                 int
 	width                      int
 	height                     int
 	selectedTodoIDs            map[int]bool
