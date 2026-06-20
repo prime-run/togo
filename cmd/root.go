@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var TodoFileName = "todos.json"
+var TodoFileName = ".togo.json"
 var sourceFlag string = "project"
 
 var rootCmd = &cobra.Command{
