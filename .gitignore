@@ -28,5 +28,4 @@ ehthumbs.db
 Thumbs.db
 *.log
 *.tmp 
-.togo
-todos.json
+.togo.json

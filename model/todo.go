@@ -38,9 +38,6 @@ func LoadTodoListWithSource(filename, source string) (*TodoList, error) {
 		return nil, err
 	}
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		if tl, ok := loadLegacyTogoTodoList(filePath, source); ok {
-			return tl, nil
-		}
 		return NewTodoList(), nil
 	}
 	data, err := os.ReadFile(filePath)
@@ -212,31 +209,6 @@ func getTodoFilePathWithSource(filename, source string) (string, error) {
 	}
 }
 
-func loadLegacyTogoTodoList(todosJSONPath, source string) (*TodoList, bool) {
-	s := strings.ToLower(strings.TrimSpace(source))
-	if s != "project" && s != "" {
-		return nil, false
-	}
-	legacyPath := filepath.Join(filepath.Dir(todosJSONPath), ".togo")
-	data, err := os.ReadFile(legacyPath)
-	if err != nil {
-		return nil, false
-	}
-	var tl TodoList
-	if err := json.Unmarshal(data, &tl); err != nil {
-		return nil, false
-	}
-	for i, todo := range tl.Todos {
-		if todo.CreatedAt.IsZero() {
-			tl.Todos[i].CreatedAt = time.Now()
-		}
-	}
-	tl.TodoByID = make(map[int]int)
-	for i, todo := range tl.Todos {
-		tl.TodoByID[todo.ID] = i
-	}
-	return &tl, true
-}
 
 func findClosestTogoFile() (string, bool) {
 	cwd, err := os.Getwd()
@@ -245,7 +217,7 @@ func findClosestTogoFile() (string, bool) {
 	}
 	dir := cwd
 	for {
-		candidate := filepath.Join(dir, ".togo")
+		candidate := filepath.Join(dir, ".togo.json")
 		if st, err := os.Stat(candidate); err == nil && !st.IsDir() {
 			return candidate, true
 		}
@@ -265,7 +237,7 @@ func GetProjectRootName() (string, bool) {
 	}
 	dir := cwd
 	for {
-		candidate := filepath.Join(dir, ".togo")
+		candidate := filepath.Join(dir, ".togo.json")
 		if st, err := os.Stat(candidate); err == nil && !st.IsDir() {
 			return filepath.Base(dir), true
 		}
