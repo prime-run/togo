@@ -15,7 +15,7 @@ var addCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			fmt.Println("Error: Todo title is required")
-			fmt.Println("Usage: todooo add <title>")
+			fmt.Println("Usage: togo add <title>")
 			os.Exit(1)
 		}
 		title := strings.Join(args, " ")
