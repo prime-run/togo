@@ -84,6 +84,9 @@ func (m TodoTableModel) View() string {
 			sourceText += " (" + m.projectName + ")"
 		}
 	}
+	if m.skipConfirmationsStatus != "" {
+		sourceText += "  |  skip confirmations: " + m.skipConfirmationsStatus
+	}
 	leftSide := titleBarStyle.Render(listTitle + sourceText)
 	rightSide := successMessageStyle.Render(m.statusMessage)
 
@@ -107,6 +110,7 @@ func (m TodoTableModel) View() string {
 			"\n→ " + confirmBtnStyle.Render("enter") + ": view details" +
 			"\n→ " + confirmBtnStyle.Render("a") + ": add new task" +
 			"\n→ " + confirmBtnStyle.Render("s") + ": switch source (project/global)" +
+			"\n→ " + confirmBtnStyle.Render("c") + ": toggle confirmations" +
 			"\n→ " + confirmBtnStyle.Render("q") + ": quit" +
 			"\n→ " + confirmBtnStyle.Render(".") + ": toggle help"
 	} else {
@@ -119,6 +123,7 @@ func (m TodoTableModel) View() string {
 			"\n→ " + confirmBtnStyle.Render("enter") + ": view details" +
 			"\n→ " + confirmBtnStyle.Render("a") + ": add new task" +
 			"\n→ " + confirmBtnStyle.Render("s") + ": switch source (project/global)" +
+			"\n→ " + confirmBtnStyle.Render("c") + ": toggle confirmations" +
 			"\n→ " + confirmBtnStyle.Render("q") + ": quit" +
 			"\n→ " + confirmBtnStyle.Render(".") + ": toggle help"
 	}
