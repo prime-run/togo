@@ -60,6 +60,7 @@ func LoadTodoListWithSource(filename, source string) (*TodoList, error) {
 	for i, todo := range tl.Todos {
 		tl.TodoByID[todo.ID] = i
 	}
+	tl.normalizeNextID()
 	return &tl, nil
 }
 
@@ -84,7 +85,24 @@ func (tl *TodoList) rebuildIndex() {
 	}
 }
 
+// normalizeNextID makes sure NextID is free. todos.json can be written by
+// hand, by scripts or by other tools, and a stale next_id there used to make
+// Add hand out an id that was already taken, which corrupts TodoByID and every
+// lookup that goes through it (Edit, Toggle, Archive, Delete, ...).
+func (tl *TodoList) normalizeNextID() {
+	maxID := 0
+	for _, todo := range tl.Todos {
+		if todo.ID > maxID {
+			maxID = todo.ID
+		}
+	}
+	if tl.NextID <= maxID {
+		tl.NextID = maxID + 1
+	}
+}
+
 func (tl *TodoList) Add(title string) *Todo {
+	tl.normalizeNextID()
 	todo := Todo{
 		ID:        tl.NextID,
 		Title:     title,
@@ -235,6 +253,7 @@ func loadLegacyTogoTodoList(todosJSONPath, source string) (*TodoList, bool) {
 	for i, todo := range tl.Todos {
 		tl.TodoByID[todo.ID] = i
 	}
+	tl.normalizeNextID()
 	return &tl, true
 }
 
